@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Plan Checker</string>
+    <string name="action_settings">Settings</string>
+    <string name="project_title">Project Title</string>
+    <string name="estimated_time">Estimated time:</string>
+    <string name="_00_00">00:00</string>
+    <string name="real_time">/ Real time:</string>
+    <string name="task_title">Task title</string>
+    <string name="comment">Comment</string>
+    <string name="title_activity_add_task">Task Editor</string>
+    <string name="save_project">Save project</string>
+    <string name="edit_button">Edit button</string>
+    <string name="timer_start_button">Timer start button</string>
+    <string name="pomodoro_start_button">Pomodoro start button</string>
+    <string name="graph">Graph</string>
+</resources>
