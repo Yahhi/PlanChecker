@@ -19,7 +19,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AddProject"
+        <activity
+            android:name=".AddProject"
             android:label="Project Editor"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -35,6 +36,15 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ru.na_uglu.planchecker.AddProject" />
+        </activity>
+        <activity
+            android:name=".TimerActivity"
+            android:label="@string/title_activity_timer"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ru.na_uglu.planchecker.MainActivity" />
         </activity>
     </application>
 

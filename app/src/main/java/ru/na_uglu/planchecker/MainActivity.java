@@ -31,6 +31,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        fillTaskList();
+    }
+
+    private void fillTaskList() {
         LocalData data = new LocalData(this, false);
         ArrayList<Project> myProjects = data.getProjects();
         ProjectTaskListAdapter adapter = new ProjectTaskListAdapter(this, myProjects);
@@ -58,5 +62,16 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == ProjectTaskListAdapter.REQUEST_TIMER) {
+            if (resultCode == RESULT_OK) {
+                fillTaskList();
+            }
+        }
     }
 }

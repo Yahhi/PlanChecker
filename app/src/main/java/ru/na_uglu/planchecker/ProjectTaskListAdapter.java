@@ -1,5 +1,6 @@
 package ru.na_uglu.planchecker;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import java.util.zip.Inflater;
 
 
 class ProjectTaskListAdapter extends BaseExpandableListAdapter {
+    static final int REQUEST_TIMER = 301;
     private ArrayList<Project> projects;
     private Context context;
 
@@ -68,10 +70,12 @@ class ProjectTaskListAdapter extends BaseExpandableListAdapter {
         projectTitle.setText(projects.get(groupPosition).title);
 
         TextView estimatedProjectTime = (TextView) convertView.findViewById(R.id.estimated_project_time);
-        estimatedProjectTime.setText(Long.toString(projects.get(groupPosition).getPlannedTime()));
+        estimatedProjectTime.setText(
+                Task.formatTimeInHoursAndMinutes(projects.get(groupPosition).getPlannedTime()));
 
         TextView realProjectTime = (TextView) convertView.findViewById((R.id.real_project_time));
-        realProjectTime.setText(Long.toString(projects.get(groupPosition).getRealTime()));
+        realProjectTime.setText(
+                Task.formatTimeInHoursAndMinutes(projects.get(groupPosition).getRealTime()));
 
         /*ImageButton addTaskButton = (ImageButton) convertView.findViewById(R.id.add_task_button);
         addTaskButton.setOnClickListener(new View.OnClickListener() {
@@ -86,7 +90,7 @@ class ProjectTaskListAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+    public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.task_item, parent, false);
         }
@@ -95,10 +99,14 @@ class ProjectTaskListAdapter extends BaseExpandableListAdapter {
         taskTitle.setText(projects.get(groupPosition).tasks.get(childPosition).title);
 
         TextView estimatedTaskTime = (TextView) convertView.findViewById(R.id.estimated_task_time);
-        estimatedTaskTime.setText(Long.toString(projects.get(groupPosition).tasks.get(childPosition).plannedTime));
+        estimatedTaskTime.setText(
+                Task.formatTimeInHoursAndMinutes(
+                        projects.get(groupPosition).tasks.get(childPosition).plannedTime));
 
         TextView realTaskTime = (TextView) convertView.findViewById(R.id.real_task_time);
-        realTaskTime.setText(Long.toString(projects.get(groupPosition).tasks.get(childPosition).realTime));
+        realTaskTime.setText(
+                Task.formatTimeInHoursAndMinutes(
+                        projects.get(groupPosition).tasks.get(childPosition).realTime));
 
         ImageButton pomodoroButton = (ImageButton) convertView.findViewById(R.id.pomodoro_button);
         pomodoroButton.setOnClickListener(new View.OnClickListener() {
@@ -112,7 +120,9 @@ class ProjectTaskListAdapter extends BaseExpandableListAdapter {
         timerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO open common timer activity
+                Intent intent = new Intent(context, TimerActivity.class);
+                intent.putExtra("taskId", projects.get(groupPosition).tasks.get(childPosition).id);
+                ((Activity) context).startActivityForResult(intent, REQUEST_TIMER);
             }
         });
 

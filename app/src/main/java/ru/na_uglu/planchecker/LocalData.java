@@ -4,8 +4,12 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 class LocalData {
     private SQLiteDatabase db;
@@ -41,17 +45,21 @@ class LocalData {
         tasksCursor.moveToFirst();
         ArrayList<Task> tasks = new ArrayList<>();
         while (!tasksCursor.isAfterLast()) {
-            int taskId = tasksCursor.getInt(tasksCursor.getColumnIndex("id"));
-            String taskTitle = tasksCursor.getString(tasksCursor.getColumnIndex("title"));
-            int taskEstimatedTime = tasksCursor.getInt(tasksCursor.getColumnIndex("estimated_time"));
-            int taskRealTime = tasksCursor.getInt(tasksCursor.getColumnIndex("real_time"));
-            boolean taskDone = tasksCursor.getInt(tasksCursor.getColumnIndex("done")) > 0;
-            tasks.add(new Task(taskId, taskTitle, taskEstimatedTime, taskRealTime, taskDone));
+            tasks.add(getTaskFromCursor(tasksCursor));
             tasksCursor.moveToNext();
         }
         tasksCursor.close();
 
         return new Project(id, title, comment, tasks);
+    }
+
+    private Task getTaskFromCursor(Cursor cursor) {
+        int taskId = cursor.getInt(cursor.getColumnIndex("id"));
+        String taskTitle = cursor.getString(cursor.getColumnIndex("title"));
+        int taskEstimatedTime = cursor.getInt(cursor.getColumnIndex("estimated_time"));
+        int taskRealTime = cursor.getInt(cursor.getColumnIndex("real_time"));
+        boolean taskDone = cursor.getInt(cursor.getColumnIndex("done")) > 0;
+        return new Task(taskId, taskTitle, taskEstimatedTime, taskRealTime, taskDone);
     }
 
     void saveProject(int id, String title, String comment) {
@@ -66,7 +74,8 @@ class LocalData {
     }
 
     Project getProject(int projectId) {
-        Cursor projectCursor = db.rawQuery("SELECT * FROM projects WHERE id = ?", new String[]{Integer.toString(projectId)});
+        Cursor projectCursor = db.rawQuery("SELECT * FROM projects WHERE id = ?",
+                new String[]{Integer.toString(projectId)});
         projectCursor.moveToFirst();
         Project project = getProjectFromCursor(projectCursor);
         projectCursor.close();
@@ -75,5 +84,83 @@ class LocalData {
 
     void closeDataConnection() {
         db.close();
+    }
+
+    Task getTask(int taskId) {
+        Cursor cursor = db.rawQuery("SELECT * FROM tasks WHERE id = ?",
+                new String[]{Integer.toString(taskId)});
+        cursor.moveToFirst();
+        Task task;
+        if (cursor.getCount() > 0) {
+            task = getTaskFromCursor(cursor);
+        } else {
+            task = new Task();
+        }
+        cursor.close();
+        return task;
+    }
+
+    String getProjectTitleForTask(int taskId) {
+        String title = "";
+        Cursor cursor = db.rawQuery("SELECT project_id FROM tasks WHERE id = ?",
+                new String[]{Integer.toString(taskId)});
+        cursor.moveToFirst();
+        if (cursor.getCount() > 0) {
+            int projectId = cursor.getInt(cursor.getColumnIndex("project_id"));
+            Cursor projectCursor = db.rawQuery("SELECT title FROM projects WHERE id = ?",
+                    new String[]{Integer.toString(projectId)});
+            if (projectCursor.getCount() > 0) {
+                projectCursor.moveToFirst();
+                title = projectCursor.getString(projectCursor.getColumnIndex("title"));
+            }
+            projectCursor.close();
+        }
+        cursor.close();
+        return title;
+    }
+
+    void makeTaskDone(int taskId) {
+        ContentValues values = new ContentValues();
+        values.put("done", 1);
+        db.update("tasks", values, "id = ?", new String[]{Integer.toString(taskId)});
+    }
+
+    void addTimeToTask(int taskId, int time) {
+        ContentValues timeValues = new ContentValues();
+        timeValues.put("task_id", taskId);
+        timeValues.put("time", time);
+        timeValues.put("when_added", getNowFormatted());
+        db.insert("time_intervals", "", timeValues);
+
+        Cursor currentTimeCursor = db.rawQuery("SELECT real_time FROM tasks WHERE id = ?",
+                new String[]{Integer.toString(taskId)});
+        currentTimeCursor.moveToFirst();
+        int curentTaskTime = currentTimeCursor.getInt(currentTimeCursor.getColumnIndex("real_time"));
+        currentTimeCursor.close();
+        ContentValues updatedTimeValues = new ContentValues();
+        updatedTimeValues.put("real_time", curentTaskTime + time);
+        Log.i("TIME", "was " + curentTaskTime);
+        Log.i("TIME", "added " + time);
+        db.update("tasks", updatedTimeValues, "id = ?", new String[]{Integer.toString(taskId)});
+    }
+
+    private String getNowFormatted() {
+        String currentDateTime = DateFormat.getDateTimeInstance().format(new Date());
+        Log.i("TIME", "at " + currentDateTime);
+        return currentDateTime;
+    }
+
+    int[] getFiveLastTimeIntervals(int taskId) {
+        Cursor cursor = db.rawQuery("SELECT * FROM time_intervals WHERE task_id = ? ORDER BY id DESC",
+                new String[]{Integer.toString(taskId)});
+        cursor.moveToFirst();
+        int[] intervals = new int[cursor.getCount()];
+        int i = 0;
+        while (!cursor.isAfterLast()) {
+            intervals[i++] = cursor.getInt(cursor.getColumnIndex("time"));
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return intervals;
     }
 }

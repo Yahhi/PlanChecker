@@ -27,7 +27,7 @@
         <item name="android:textColor">#FFFFFF</item>
     </style>
 
-    <style name="MyButton" parent="Base.TextAppearance.AppCompat.Button" >
+    <style name="MyButton" parent="Base.TextAppearance.AppCompat.Button">
         <item name="backgroundTint">@color/colorAccent</item>
     </style>
 

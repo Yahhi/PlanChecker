@@ -8,7 +8,7 @@ class DBHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "projectChecker.db";
 
     DBHelper(Context context) {
-        super(context, DATABASE_NAME, null, 1);
+        super(context, DATABASE_NAME, null, 2);
     }
 
     @Override
@@ -29,6 +29,12 @@ class DBHelper extends SQLiteOpenHelper {
                 "`comment` TEXT, " +
                 "`done` INTEGER DEFAULT 0 )");
         insertTasksData(db);
+
+        db.execSQL("CREATE TABLE `time_intervals` (" +
+                "`id` INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "`task_id` INTEGER NOT NULL, " +
+                "`time` INTEGER NOT NULL, " +
+                "`when_added` TEXT NOT NULL )");
     }
 
     private void insertProjectData(SQLiteDatabase db) {
