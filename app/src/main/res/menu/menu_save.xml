@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/save_project_menuitem"
+        android:id="@+id/save_menuitem"
         android:icon="@drawable/ic_save_white_24dp"
         android:title="@string/save_project"
         app:showAsAction="always" />

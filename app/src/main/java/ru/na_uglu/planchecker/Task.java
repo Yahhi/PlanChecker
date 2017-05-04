@@ -4,6 +4,7 @@ package ru.na_uglu.planchecker;
 class Task {
     int id;
     String title;
+    String comment;
     int plannedTime;
     int realTime;
     boolean done = false;
@@ -11,6 +12,7 @@ class Task {
     Task() {
         id = 0;
         title = "";
+        comment = "";
         plannedTime = 0;
         realTime = 0;
     }
@@ -33,9 +35,10 @@ class Task {
         return hoursString + ":" + minutesString;
     }
 
-    Task(int id, String title, int estimatedTime, int realTime, boolean done) {
+    Task(int id, String title, String comment, int estimatedTime, int realTime, boolean done) {
         this.id = id;
         this.title = title;
+        this.comment = comment;
         plannedTime = estimatedTime;
         this.realTime = realTime;
         this.done = done;

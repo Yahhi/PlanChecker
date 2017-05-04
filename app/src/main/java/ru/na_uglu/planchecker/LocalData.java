@@ -2,6 +2,7 @@ package ru.na_uglu.planchecker;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -59,7 +60,8 @@ class LocalData {
         int taskEstimatedTime = cursor.getInt(cursor.getColumnIndex("estimated_time"));
         int taskRealTime = cursor.getInt(cursor.getColumnIndex("real_time"));
         boolean taskDone = cursor.getInt(cursor.getColumnIndex("done")) > 0;
-        return new Task(taskId, taskTitle, taskEstimatedTime, taskRealTime, taskDone);
+        String comment = cursor.getString(cursor.getColumnIndex("comment"));
+        return new Task(taskId, taskTitle, comment, taskEstimatedTime, taskRealTime, taskDone);
     }
 
     void saveProject(int id, String title, String comment) {
@@ -162,5 +164,58 @@ class LocalData {
         }
         cursor.close();
         return intervals;
+    }
+
+    void saveTask(int taskId, int projectId, String title, String estimatedTime, String comment) {
+        ContentValues values = new ContentValues();
+        values.put("project_id", projectId);
+        values.put("title", title);
+        values.put("estimated_time", convertEnteredTimeToInt(estimatedTime));
+        values.put("comment", comment);
+        if (taskId == 0) {
+            db.insert("tasks", "", values);
+        } else {
+            db.update("tasks", values, "id = ?", new String[]{Integer.toString(taskId)});
+        }
+    }
+
+    private int convertEnteredTimeToInt(String estimatedTime) {
+        String[] hoursAndMinutes = estimatedTime.split(":");
+        int timeInMinutes;
+        try {
+            if (hoursAndMinutes.length == 2) {
+                timeInMinutes = Integer.parseInt(hoursAndMinutes[0]) * 60;
+                timeInMinutes += Integer.parseInt(hoursAndMinutes[1]);
+            } else {
+                timeInMinutes = Integer.parseInt(hoursAndMinutes[0]);
+            }
+        } catch (NumberFormatException e) {
+            timeInMinutes = 0;
+        }
+        return timeInMinutes;
+    }
+
+    String[] getProjectTitles() {
+        Cursor cursor = db.rawQuery("SELECT title FROM projects ORDER BY id ASC", null);
+        String[] titles = new String[cursor.getCount()];
+        cursor.moveToFirst();
+        int i = 0;
+        while (!cursor.isAfterLast()) {
+            titles[i++] = cursor.getString(cursor.getColumnIndex("title"));
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return titles;
+    }
+
+    int getProjectIdFromTitle(String selectedItem) {
+        int id = 0;
+        Cursor cursor = db.rawQuery("SELECT id FROM projects WHERE title = ?", new String[]{selectedItem});
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            id = cursor.getInt(cursor.getColumnIndex("id"));
+        }
+        cursor.close();
+        return id;
     }
 }

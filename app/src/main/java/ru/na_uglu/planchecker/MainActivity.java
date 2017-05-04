@@ -15,6 +15,8 @@ import com.getbase.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
+    static final int REQUEST_PROJECT_EDITION = 399;
+    static final int REQUEST_TASK_EDITION = 398;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), AddProject.class);
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_PROJECT_EDITION);
             }
         });
 
@@ -37,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), AddTask.class);
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_TASK_EDITION);
             }
         });
 
@@ -87,6 +89,10 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == ProjectTaskListAdapter.REQUEST_TIMER) {
+            if (resultCode == RESULT_OK) {
+                fillTaskList();
+            }
+        } else if ((requestCode == REQUEST_TASK_EDITION) || (requestCode == REQUEST_PROJECT_EDITION)) {
             if (resultCode == RESULT_OK) {
                 fillTaskList();
             }

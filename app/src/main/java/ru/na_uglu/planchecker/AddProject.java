@@ -1,5 +1,6 @@
 package ru.na_uglu.planchecker;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,7 +8,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
-import android.widget.TextView;
 
 public class AddProject extends AppCompatActivity {
 
@@ -41,19 +41,21 @@ public class AddProject extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_project, menu);
+        getMenuInflater().inflate(R.menu.menu_save, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.save_project_menuitem) {
+        if (id == R.id.save_menuitem) {
             LocalData data = new LocalData(this, true);
             data.saveProject(projectId,
                     projectTitle.getText().toString(),
                     projectComment.getText().toString());
             data.closeDataConnection();
+
+            setResult(Activity.RESULT_OK);
             finish();
         }
         return super.onOptionsItemSelected(item);
