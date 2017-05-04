@@ -130,7 +130,9 @@ class ProjectTaskListAdapter extends BaseExpandableListAdapter {
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO open task editor
+                Intent intent = new Intent(context, AddTask.class);
+                intent.putExtra("taskId", projects.get(groupPosition).tasks.get(childPosition).id);
+                ((Activity) context).startActivityForResult(intent, REQUEST_TIMER);
             }
         });
 

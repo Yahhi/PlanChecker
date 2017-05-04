@@ -21,14 +21,57 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_main" />
+    <include layout="@layout/content_main"
+        android:id="@+id/include" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:id="@+id/right_labels"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@drawable/ic_add_white_24dp" />
+        app:layout_anchor="@+id/include"
+        app:layout_anchorGravity="right|bottom"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        app:fab_addButtonColorNormal="@color/colorSecondaryDark"
+        app:fab_addButtonColorPressed="@color/colorPrimaryDark"
+        app:fab_addButtonPlusIconColor="@color/white"
+        app:fab_labelStyle="@style/menu_labels_style"
+        app:fab_labelsPosition="left">
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_add_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/colorSecondaryDark"
+            app:fab_colorPressed="@color/colorSecondary"
+            app:fab_addButtonColorPressed="@color/colorPrimaryDark"
+            app:fab_icon="@drawable/ic_history_white_24dp"
+            app:fab_size="mini"
+            app:fab_title="Add time"/>
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_add_task"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/colorSecondaryDark"
+            app:fab_colorPressed="@color/colorSecondary"
+            app:fab_addButtonColorPressed="@color/colorPrimaryDark"
+            app:fab_icon="@drawable/ic_blank_file"
+            app:fab_size="mini"
+            app:fab_title="Add task"/>
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_add_project"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/colorSecondaryDark"
+            app:fab_colorPressed="@color/colorSecondary"
+            app:fab_addButtonColorPressed="@color/colorPrimaryDark"
+            app:fab_icon="@drawable/ic_folder_open_white_24dp"
+            app:fab_size="mini"
+            app:fab_title="Add project"/>
+
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
 
 </android.support.design.widget.CoordinatorLayout>

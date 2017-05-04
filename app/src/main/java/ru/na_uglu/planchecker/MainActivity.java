@@ -2,7 +2,6 @@ package ru.na_uglu.planchecker;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -10,6 +9,8 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ExpandableListView;
+
+import com.getbase.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -22,12 +23,29 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fab_project = (FloatingActionButton) findViewById(R.id.fab_add_project);
+        fab_project.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), AddProject.class);
                 startActivity(intent);
+            }
+        });
+
+        FloatingActionButton fab_task = (FloatingActionButton) findViewById(R.id.fab_add_task);
+        fab_task.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), AddTask.class);
+                startActivity(intent);
+            }
+        });
+
+        FloatingActionButton fab_time = (FloatingActionButton) findViewById(R.id.fab_add_time);
+        fab_time.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO open addTime activity
             }
         });
 
