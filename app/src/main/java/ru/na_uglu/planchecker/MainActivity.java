@@ -175,9 +175,14 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
             return true;
+        } else if (id == R.id.info_menu_item) {
+            //TODO open info activity
+        } else if (id == R.id.whenhub_menu_item) {
+            //TODO open whenhub for user
         }
 
         return super.onOptionsItemSelected(item);

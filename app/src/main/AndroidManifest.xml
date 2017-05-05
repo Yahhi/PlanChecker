@@ -55,6 +55,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ru.na_uglu.planchecker.MainActivity" />
         </activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ru.na_uglu.planchecker.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

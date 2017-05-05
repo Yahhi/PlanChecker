@@ -36,4 +36,22 @@
     <string name="done">Done</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+    <string name="pref_integration_enable">Enable WHENHUB integration</string>
+    <string name="pref_description_integration">WHENHUB lets you share and see your
+        productivity charts in a new and creative way
+    </string>
+
+    <string name="pref_access_token">Access Token</string>
+    <string name="pref_default_token">64 characters from your profile in WHENHUB Studio</string>
+
+    <string name="pref_title_new_message_notifications">Pomodoro notification</string>
+
+    <string name="pref_title_ringtone">Ringtone</string>
+    <string name="pref_ringtone_silent">Silent</string>
+
+    <string name="pref_title_vibrate">Vibrate</string>
+    <string name="info">Info</string>
 </resources>
