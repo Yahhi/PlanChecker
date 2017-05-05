@@ -180,7 +180,9 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             return true;
         } else if (id == R.id.info_menu_item) {
-            //TODO open info activity
+            Intent intent = new Intent(this, InfoActivity.class);
+            startActivity(intent);
+            return true;
         } else if (id == R.id.whenhub_menu_item) {
             //TODO open whenhub for user
         }

@@ -54,4 +54,58 @@
 
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="info">Info</string>
+    <string name="title_activity_info">Info</string>
+
+    <string name="large_text">
+        "Time management is one of the most important skills for successful people.\n\n"
+
+        "Time is the only resource that can not be borrowed from outside or renewed."
+        "To be successful you should plan your time and use it as effective as possible."
+        "This app can help you plan your projects and tasks and increase your planning skill.\n\n"
+
+        "Pomodoro technique.\n\n"
+
+        "The Pomodoro Technique is a time management method developed by Francesco Cirillo "
+        "in the late 1980s. The technique uses a timer to break down work into intervals, "
+        "traditionally 25 minutes in length, separated by short breaks. These intervals are "
+        "named pomodoros, the plural in English of the Italian word pomodoro (tomato), after "
+        "the tomato-shaped kitchen timer that Cirillo used as a university student.\n\n"
+
+        "Underlying principles.\n\n"
+
+        "There are six steps in the technique:\n"
+        "1. Decide on the task to be done.\n"
+        "2. Set the pomodoro timer (traditionally to 25 minutes).\n"
+        "3. Work on the task until the timer rings.\n"
+        "4. After the timer rings, put a checkmark on a piece of paper.\n"
+        "5. If you have fewer than four checkmarks, take a short break (3–5 minutes), then go to step 2.\n"
+        "6. After four pomodoros, take a longer break (15–30 minutes), reset your checkmark count to zero, then go to step 1.\n\n"
+
+        "The stages of planning, tracking, recording, processing and visualizing are fundamental "
+        "to the technique. In the planning phase tasks are prioritized by recording them in a "
+        "'To Do Today' list. This enables users to estimate the effort tasks require. "
+        "As pomodoros are completed, they are recorded, adding to a sense of accomplishment and "
+        "providing raw data for subsequent self-observation and improvement.\n\n"
+
+        "For the purposes of the technique, a pomodoro is the interval of time spent working."
+        "After task completion, any time remaining in the pomodoro is devoted to overlearning. "
+        "Regular breaks are taken, aiding assimilation. A short (3–5 minutes) rest separates "
+        "consecutive pomodoros. Four pomodoros form a set. A longer (15–30 minute) rest is "
+        "taken between sets.\n\n"
+
+        "A goal of the technique is to reduce the impact of internal and external interruptions "
+        "on focus and flow. A pomodoro is indivisible. When interrupted during a pomodoro, "
+        "either the other activity must be recorded and postponed (inform – negotiate – "
+        "schedule – call back) or the pomodoro must be abandoned.\n\n"
+
+        "Text source: wikipedia.org\n\n"
+
+        "Used icons.\n\n"
+
+        "Some icons used in app was designed by authors from www.flaticon.com.\n"
+        "Special thanks to these authors: \n\n"
+        "<a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>,\n"
+        "<a href="http://www.flaticon.com/authors/dave-gandy" title="Dave Gandy">Dave Gandy</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>,\n"
+        "<a href="http://www.flaticon.com/authors/madebyoliver" title="Madebyoliver">Madebyoliver</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>.\n\n"
+    </string>
 </resources>
