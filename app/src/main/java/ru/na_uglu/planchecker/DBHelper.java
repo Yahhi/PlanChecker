@@ -8,7 +8,7 @@ class DBHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "projectChecker.db";
 
     DBHelper(Context context) {
-        super(context, DATABASE_NAME, null, 2);
+        super(context, DATABASE_NAME, null, 3);
     }
 
     @Override
@@ -16,7 +16,8 @@ class DBHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE `projects` (\n" +
                 " `id` INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
                 " `title` TEXT NOT NULL,\n" +
-                " `comment` TEXT);");
+                " `comment` TEXT,\n" +
+                " `done` INTEGER DEFAULT 0);");
         insertProjectData(db);
 
         db.execSQL("CREATE TABLE `tasks` (" +
@@ -38,8 +39,8 @@ class DBHelper extends SQLiteOpenHelper {
     }
 
     private void insertProjectData(SQLiteDatabase db) {
-        db.execSQL("INSERT INTO `projects` VALUES (1,'Cooking App','');");
-        db.execSQL("INSERT INTO `projects` VALUES (2,'WhenHub App','');");
+        db.execSQL("INSERT INTO `projects` VALUES (1,'Cooking App','', 0);");
+        db.execSQL("INSERT INTO `projects` VALUES (2,'WhenHub App','', 0);");
     }
 
     private void insertTasksData(SQLiteDatabase db) {
@@ -52,6 +53,7 @@ class DBHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS projects");
         db.execSQL("DROP TABLE IF EXISTS tasks");
+        db.execSQL("DROP TABLE IF EXISTS time_intervals");
         onCreate(db);
     }
 }

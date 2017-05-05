@@ -1,13 +1,20 @@
 package ru.na_uglu.planchecker;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -61,20 +68,111 @@ public class MainActivity extends AppCompatActivity {
         ProjectTaskListAdapter adapter = new ProjectTaskListAdapter(this, myProjects);
         ExpandableListView projectsList = (ExpandableListView) findViewById(R.id.projects_list);
         projectsList.setAdapter(adapter);
+        registerForContextMenu(projectsList);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        if (v.getId() == R.id.projects_list) {
+            MenuInflater inflater = getMenuInflater();
+            ExpandableListView.ExpandableListContextMenuInfo info =
+                    (ExpandableListView.ExpandableListContextMenuInfo) menuInfo;
+            int projectId = (int) info.id;
+            LocalData data = new LocalData(getBaseContext(), false);
+            menu.setHeaderTitle(data.getProject(projectId).title);
+            data.closeDataConnection();
+            inflater.inflate(R.menu.project_context_menu, menu);
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        ExpandableListView.ExpandableListContextMenuInfo info =
+                (ExpandableListView.ExpandableListContextMenuInfo) item.getMenuInfo();
+        int projectId = (int) info.id;
+        switch (item.getItemId()) {
+            case R.id.context_menu_edit:
+                Intent intent = new Intent(getBaseContext(), AddProject.class);
+                intent.putExtra("projectId", projectId);
+                startActivityForResult(intent, REQUEST_PROJECT_EDITION);
+                return true;
+            case R.id.context_menu_delete:
+                askIfReallyDeleteProject(projectId);
+
+                return true;
+            case R.id.context_menu_done:
+                askIfReallyMakeProjectDone(projectId);
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+
+    protected void askIfReallyDoSomething(String dialogTitle, String dialogMessage, DialogInterface.OnClickListener listener) {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle(dialogTitle);
+        dialog.setMessage(dialogMessage);
+        dialog.setNegativeButton(R.string.no, listener);
+        dialog.setPositiveButton(R.string.yes, listener);
+        dialog.setCancelable(false);
+        dialog.show();
+    }
+
+    private void askIfReallyDeleteProject(final int projectId) {
+        DialogInterface.OnClickListener wannaDelete = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        LocalData data = new LocalData(getBaseContext(), true);
+                        data.deleteProject(projectId);
+                        data.closeDataConnection();
+                        fillTaskList();
+                        break;
+
+                }
+            }
+        };
+        LocalData data = new LocalData(getBaseContext(), false);
+        askIfReallyDoSomething(
+                data.getProject(projectId).title,
+                getString(R.string.delete_project_dialog),
+                wannaDelete);
+        data.closeDataConnection();
+    }
+
+    private void askIfReallyMakeProjectDone(final int projectId) {
+        DialogInterface.OnClickListener wannaMakeProjectDone = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        LocalData data = new LocalData(getBaseContext(), true);
+                        data.makeProjectDone(projectId);
+                        data.closeDataConnection();
+                        fillTaskList();
+                        break;
+
+                }
+            }
+        };
+        LocalData data = new LocalData(getBaseContext(), false);
+        askIfReallyDoSomething(
+                data.getProject(projectId).title,
+                getString(R.string.make_project_done_dialog),
+                wannaMakeProjectDone);
+        data.closeDataConnection();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement

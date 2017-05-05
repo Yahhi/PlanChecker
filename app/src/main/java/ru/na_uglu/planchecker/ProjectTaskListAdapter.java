@@ -2,6 +2,7 @@ package ru.na_uglu.planchecker;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,12 +48,12 @@ class ProjectTaskListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public long getGroupId(int groupPosition) {
-        return 0;
+        return projects.get(groupPosition).id;
     }
 
     @Override
     public long getChildId(int groupPosition, int childPosition) {
-        return 0;
+        return projects.get(groupPosition).tasks.get(childPosition).id;
     }
 
     @Override
@@ -76,15 +77,6 @@ class ProjectTaskListAdapter extends BaseExpandableListAdapter {
         TextView realProjectTime = (TextView) convertView.findViewById((R.id.real_project_time));
         realProjectTime.setText(
                 Task.formatTimeInHoursAndMinutes(projects.get(groupPosition).getRealTime()));
-
-        /*ImageButton addTaskButton = (ImageButton) convertView.findViewById(R.id.add_task_button);
-        addTaskButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                //TODO open add project activity
-            }
-        });*/
 
         return convertView;
     }
@@ -133,6 +125,50 @@ class ProjectTaskListAdapter extends BaseExpandableListAdapter {
                 Intent intent = new Intent(context, AddTask.class);
                 intent.putExtra("taskId", projects.get(groupPosition).tasks.get(childPosition).id);
                 ((Activity) context).startActivityForResult(intent, REQUEST_TIMER);
+            }
+        });
+
+        ImageButton deleteButton = (ImageButton) convertView.findViewById(R.id.delete_button);
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity) context).askIfReallyDoSomething(
+                        projects.get(groupPosition).tasks.get(childPosition).title,
+                        context.getString(R.string.delete_task_dialog),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                LocalData data = new LocalData(context, true);
+                                data.deleteTask(projects.get(groupPosition).tasks.get(childPosition).id);
+                                data.closeDataConnection();
+
+                                projects.get(groupPosition).tasks.remove(childPosition);
+                                notifyDataSetChanged();
+                            }
+                        }
+                );
+            }
+        });
+
+        ImageButton doneButton = (ImageButton) convertView.findViewById(R.id.done_button);
+        doneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity) context).askIfReallyDoSomething(
+                        projects.get(groupPosition).tasks.get(childPosition).title,
+                        context.getString(R.string.make_task_done_dialog),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                LocalData data = new LocalData(context, true);
+                                data.makeTaskDone(projects.get(groupPosition).tasks.get(childPosition).id);
+                                data.closeDataConnection();
+
+                                projects.get(groupPosition).tasks.remove(childPosition);
+                                notifyDataSetChanged();
+                            }
+                        }
+                );
             }
         });
 

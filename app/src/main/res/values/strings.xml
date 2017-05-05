@@ -26,4 +26,14 @@
     <string name="task">Task</string>
     <string name="additional_working_time">Additional working time</string>
     <string name="project">Project</string>
+    <string name="delete_project_dialog">Do you really want to delete this project?</string>
+    <string name="delete_task_dialog">Do you really want to delete this task?</string>
+    <string name="make_project_done_dialog">Do you want to move this project to archive?</string>
+    <string name="make_task_done_dialog">Do you want to move this task to archive?</string>
+    <string name="delete_button">Delete button</string>
+    <string name="make_task_done">Make task done</string>
+    <string name="vertical_action_divider">Vertical action divider</string>
+    <string name="done">Done</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
 </resources>

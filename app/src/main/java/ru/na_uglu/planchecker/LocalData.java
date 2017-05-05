@@ -27,7 +27,7 @@ class LocalData {
     ArrayList<Project> getProjects() {
         ArrayList<Project> projects = new ArrayList<>();
 
-        Cursor cursor = db.rawQuery("SELECT * FROM projects", null);
+        Cursor cursor = db.rawQuery("SELECT * FROM projects WHERE done = 0", null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             projects.add(getProjectFromCursor(cursor));
@@ -42,7 +42,7 @@ class LocalData {
         String title = cursor.getString(cursor.getColumnIndex("title"));
         String comment = cursor.getString(cursor.getColumnIndex("comment"));
 
-        Cursor tasksCursor = db.rawQuery("SELECT * FROM tasks WHERE project_id = ?", new String[]{Integer.toString(id)});
+        Cursor tasksCursor = db.rawQuery("SELECT * FROM tasks WHERE done = 0 AND project_id = ?", new String[]{Integer.toString(id)});
         tasksCursor.moveToFirst();
         ArrayList<Task> tasks = new ArrayList<>();
         while (!tasksCursor.isAfterLast()) {
@@ -196,7 +196,7 @@ class LocalData {
     }
 
     String[] getProjectTitles() {
-        Cursor cursor = db.rawQuery("SELECT title FROM projects ORDER BY id ASC", null);
+        Cursor cursor = db.rawQuery("SELECT title FROM projects WHERE done = 0 ORDER BY id ASC", null);
         String[] titles = new String[cursor.getCount()];
         cursor.moveToFirst();
         int i = 0;
@@ -233,7 +233,7 @@ class LocalData {
     String[] getTaskTitles(String projectTitle) {
         int projectId = getProjectIdFromTitle(projectTitle);
         Cursor cursorTaskTitles = db.rawQuery(
-                "SELECT title FROM tasks WHERE project_id = ? ORDER BY id ASC",
+                "SELECT title FROM tasks WHERE done = 0 AND project_id = ? ORDER BY id ASC",
                 new String[]{Integer.toString(projectId)});
         String[] titles = new String[cursorTaskTitles.getCount()];
         cursorTaskTitles.moveToFirst();
@@ -244,5 +244,20 @@ class LocalData {
         }
         cursorTaskTitles.close();
         return titles;
+    }
+
+    void deleteProject(int projectId) {
+        db.delete("tasks", "project_id = ?", new String[]{Integer.toString(projectId)});
+        db.delete("projects", "id = ?", new String[]{Integer.toString(projectId)});
+    }
+
+    void makeProjectDone(int projectId) {
+        ContentValues values = new ContentValues();
+        values.put("done", 1);
+        db.update("projects", values, "id = ?", new String[]{Integer.toString(projectId)});
+    }
+
+    void deleteTask(int id) {
+        db.delete("tasks", "id = ?", new String[]{Integer.toString(id)});
     }
 }

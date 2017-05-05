@@ -59,7 +59,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:focusable="false"
             android:contentDescription="@string/pomodoro_start_button"
             style="@style/MyButton"
             app:srcCompat="@drawable/ic_tomato" />
@@ -69,20 +68,47 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:focusable="false"
             android:contentDescription="@string/timer_start_button"
             style="@style/MyButton"
             app:srcCompat="@drawable/ic_timer_white_24dp" />
+
+        <ImageView
+            android:contentDescription="@string/vertical_action_divider"
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:layout_gravity="center"
+            app:srcCompat="@drawable/ic_vertical_line" />
 
         <ImageButton
             android:id="@+id/edit_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:focusable="false"
             android:contentDescription="@string/edit_button"
             style="@style/MyButton"
             app:srcCompat="@drawable/ic_edit_white_24dp" />
+
+        <ImageButton
+            android:id="@+id/delete_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/delete_button"
+            style="@style/MyButton"
+            app:srcCompat="@drawable/ic_delete_white_24dp" />
+
+        <ImageButton
+            android:id="@+id/done_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/make_task_done"
+            style="@style/MyButton"
+            app:srcCompat="@drawable/ic_done_white_24dp" />
 
     </LinearLayout>
 
