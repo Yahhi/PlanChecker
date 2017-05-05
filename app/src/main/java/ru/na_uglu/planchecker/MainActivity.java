@@ -47,7 +47,8 @@ public class MainActivity extends AppCompatActivity {
         fab_time.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO open addTime activity
+                Intent intent = new Intent(getApplicationContext(), AddTime.class);
+                startActivityForResult(intent, ProjectTaskListAdapter.REQUEST_TIMER);
             }
         });
 

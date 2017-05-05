@@ -166,11 +166,11 @@ class LocalData {
         return intervals;
     }
 
-    void saveTask(int taskId, int projectId, String title, String estimatedTime, String comment) {
+    void saveTask(int taskId, int projectId, String title, int estimatedTime, String comment) {
         ContentValues values = new ContentValues();
         values.put("project_id", projectId);
         values.put("title", title);
-        values.put("estimated_time", convertEnteredTimeToInt(estimatedTime));
+        values.put("estimated_time", estimatedTime);
         values.put("comment", comment);
         if (taskId == 0) {
             db.insert("tasks", "", values);
@@ -179,7 +179,7 @@ class LocalData {
         }
     }
 
-    private int convertEnteredTimeToInt(String estimatedTime) {
+    int convertEnteredTimeToInt(String estimatedTime) {
         String[] hoursAndMinutes = estimatedTime.split(":");
         int timeInMinutes;
         try {
@@ -217,5 +217,32 @@ class LocalData {
         }
         cursor.close();
         return id;
+    }
+
+    int getTaskIdFromTitle(String selectedItem) {
+        int id = 0;
+        Cursor cursor = db.rawQuery("SELECT id FROM tasks WHERE title = ?", new String[]{selectedItem});
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            id = cursor.getInt(cursor.getColumnIndex("id"));
+        }
+        cursor.close();
+        return id;
+    }
+
+    String[] getTaskTitles(String projectTitle) {
+        int projectId = getProjectIdFromTitle(projectTitle);
+        Cursor cursorTaskTitles = db.rawQuery(
+                "SELECT title FROM tasks WHERE project_id = ? ORDER BY id ASC",
+                new String[]{Integer.toString(projectId)});
+        String[] titles = new String[cursorTaskTitles.getCount()];
+        cursorTaskTitles.moveToFirst();
+        int i = 0;
+        while (!cursorTaskTitles.isAfterLast()) {
+            titles[i++] = cursorTaskTitles.getString(cursorTaskTitles.getColumnIndex("title"));
+            cursorTaskTitles.moveToNext();
+        }
+        cursorTaskTitles.close();
+        return titles;
     }
 }

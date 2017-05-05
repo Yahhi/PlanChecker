@@ -6,6 +6,9 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="android:dropDownListViewStyle">@style/Widget.Spinner.DropDown.ListView</item>
+
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -34,6 +37,10 @@
     <style name="menu_labels_style">
         <item name="android:background">@drawable/fab_label_background</item>
         <item name="android:textColor">@color/colorSecondaryDark</item>
+    </style>
+
+    <style name="Widget.Spinner.DropDown.ListView" parent="Widget.AppCompat.ListView.DropDown">
+        <item name="android:padding">8dp</item>
     </style>
 
 </resources>

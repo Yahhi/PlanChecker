@@ -46,6 +46,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ru.na_uglu.planchecker.MainActivity" />
         </activity>
+        <activity
+            android:name=".AddTime"
+            android:label="@string/title_activity_add_time"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ru.na_uglu.planchecker.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

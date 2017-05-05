@@ -3,8 +3,10 @@
     <string name="action_settings">Settings</string>
     <string name="project_title">Project Title</string>
     <string name="estimated_time">Estimated time: </string>
-    <string name="_00_00">00:00</string>
+    <string name="estimated_task_time">Estimated time: </string>
     <string name="real_time">/ Real time: </string>
+    <string name="total_task_time">Total time: </string>
+    <string name="_00_00">00:00</string>
     <string name="task_title">Task title</string>
     <string name="comment">Comment</string>
     <string name="title_activity_add_task">Task Editor</string>
@@ -14,12 +16,14 @@
     <string name="pomodoro_start_button">Pomodoro start button</string>
     <string name="graph">Graph</string>
     <string name="title_activity_timer">TimerActivity</string>
-    <string name="total_task_time">Total time: </string>
-    <string name="estimated_task_time">Estimated time: </string>
     <string name="start_or_pause_chronometer_button">start or pause chronometer button</string>
     <string name="back_on_timer_activity_title">Do you want to stop timer?</string>
     <string name="back_on_timer_activity">The task is still in progress. Do you want to stop working on this task?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="in_project">In project</string>
+    <string name="title_activity_add_time">Add Time</string>
+    <string name="task">Task</string>
+    <string name="additional_working_time">Additional working time</string>
+    <string name="project">Project</string>
 </resources>

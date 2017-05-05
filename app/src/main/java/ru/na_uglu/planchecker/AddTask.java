@@ -70,7 +70,7 @@ public class AddTask extends AppCompatActivity {
             int projectId = data.getProjectIdFromTitle(projectSelection.getSelectedItem().toString());
             data.saveTask(taskId, projectId,
                     taskTitle.getText().toString(),
-                    taskTime.getText().toString(),
+                    data.convertEnteredTimeToInt(taskTime.getText().toString()),
                     comment.getText().toString());
             data.closeDataConnection();
 
