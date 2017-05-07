@@ -8,7 +8,7 @@ class DBHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "projectChecker.db";
 
     DBHelper(Context context) {
-        super(context, DATABASE_NAME, null, 3);
+        super(context, DATABASE_NAME, null, 4);
     }
 
     @Override

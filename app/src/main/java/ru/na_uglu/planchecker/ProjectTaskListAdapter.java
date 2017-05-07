@@ -104,7 +104,10 @@ class ProjectTaskListAdapter extends BaseExpandableListAdapter {
         pomodoroButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO open activity with pomodoro timer
+                Intent intent = new Intent(context, TimerActivity.class);
+                intent.putExtra("taskId", projects.get(groupPosition).tasks.get(childPosition).id);
+                intent.putExtra("pomodoroMode", true);
+                ((Activity) context).startActivityForResult(intent, REQUEST_TIMER);
             }
         });
 

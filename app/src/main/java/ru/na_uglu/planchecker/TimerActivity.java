@@ -7,6 +7,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -16,13 +19,16 @@ import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.TextView;
 
-public class TimerActivity extends AppCompatActivity {
+import static android.R.attr.fragment;
+
+public class TimerActivity extends AppCompatActivity implements OnFragmentTimeAddedListener {
     private Chronometer chronometer;
-    private boolean chronometerActive = false;
     long chronometerBase;
 
-    private int taskId;
+    int taskId;
     private int realTime;
+    private boolean pomodoroMode = false;
+    private timeIsGoing timingFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,9 +37,21 @@ public class TimerActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        chronometer = (Chronometer) findViewById(R.id.chronometer_timer);
         Intent intent = getIntent();
         taskId = intent.getIntExtra("taskId", 0);
+        pomodoroMode = intent.getBooleanExtra("pomodoroMode", false);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if (pomodoroMode) {
+            PomodoroFragment fragment = new PomodoroFragment();
+            timingFragment = fragment;
+            transaction.add(R.id.place_for_timer, fragment);
+        } else {
+            CommonTimerFragment fragment = new CommonTimerFragment();
+            timingFragment = fragment;
+            transaction.add(R.id.place_for_timer, fragment);
+        }
+        transaction.commit();
+
         LocalData data = new LocalData(this, false);
         Task task = data.getTask(taskId);
         TextView taskTitle = (TextView) findViewById(R.id.chronometer_task_title);
@@ -84,32 +102,6 @@ public class TimerActivity extends AppCompatActivity {
         }
     }
 
-    public void onPlayPause(View view) {
-        if (chronometerActive) {
-            chronometer.stop();
-            LocalData data = new LocalData(this, true);
-            int timeInMinutes = (int) ((SystemClock.elapsedRealtime() - chronometer.getBase()) / 1000 / 60);
-            data.addTimeToTask(taskId, timeInMinutes);
-            realTime += timeInMinutes;
-            showRealTime();
-            int[] lastTimerIntervals = data.getFiveLastTimeIntervals(taskId);
-            showFiveLastTimersIntervals(lastTimerIntervals);
-            data.closeDataConnection();
-
-            Button playPauseButton = (Button) findViewById(R.id.StartChronometerButton);
-            playPauseButton.setBackgroundResource(R.drawable.ic_play_circle_filled_24dp);
-            chronometer.setBase(SystemClock.elapsedRealtime());
-            setResult(Activity.RESULT_OK);
-        } else {
-            Button playPauseButton = (Button) findViewById(R.id.StartChronometerButton);
-            playPauseButton.setBackgroundResource(R.drawable.ic_pause_circle_filled_black_24dp);
-            chronometerBase = SystemClock.elapsedRealtime();
-            chronometer.setBase(chronometerBase);
-            chronometer.start();
-        }
-        chronometerActive = !chronometerActive;
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -122,7 +114,7 @@ public class TimerActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (chronometerActive) {
+        if (timingFragment.isTimerActive()) {
             askIfStopChronometer();
         } else {
             super.onBackPressed();
@@ -135,8 +127,7 @@ public class TimerActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
-                        Button playPauseButton = (Button) findViewById(R.id.StartChronometerButton);
-                        playPauseButton.callOnClick();
+                        timingFragment.stopTimerAndSave();
                         finish();
                         break;
 
@@ -167,12 +158,6 @@ public class TimerActivity extends AppCompatActivity {
 
     private void restoreImportantVariables() {
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-        chronometerActive = preferences.getBoolean("chronometerActive", false);
-        chronometerBase = preferences.getLong("chronometerBase", 0);
-        if (chronometerActive) {
-            chronometer.setBase(chronometerBase);
-            chronometer.start();
-        }
         taskId = preferences.getInt("taskId", 0);
         realTime = preferences.getInt("realTime", 0);
     }
@@ -180,10 +165,26 @@ public class TimerActivity extends AppCompatActivity {
     private void saveImportantVariables() {
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor preferencesEditor = preferences.edit();
-        preferencesEditor.putBoolean("chronometerActive", chronometerActive);
-        preferencesEditor.putLong("chronometerBase", chronometerBase);
         preferencesEditor.putInt("taskId", taskId);
         preferencesEditor.putInt("realTime", realTime);
         preferencesEditor.apply();
     }
+
+    @Override
+    public int getTaskIdentifier() {
+        return taskId;
+    }
+
+    @Override
+    public void onTimeAddedInteraction(int timeInMinutes) {
+        LocalData data = new LocalData(this, true);
+        data.addTimeToTask(taskId, timeInMinutes);
+        realTime += timeInMinutes;
+        showRealTime();
+        int[] lastTimerIntervals = data.getFiveLastTimeIntervals(taskId);
+        showFiveLastTimersIntervals(lastTimerIntervals);
+        data.closeDataConnection();
+        setResult(Activity.RESULT_OK);
+    }
+
 }

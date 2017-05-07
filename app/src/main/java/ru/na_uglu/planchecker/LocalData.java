@@ -128,22 +128,24 @@ class LocalData {
     }
 
     void addTimeToTask(int taskId, int time) {
-        ContentValues timeValues = new ContentValues();
-        timeValues.put("task_id", taskId);
-        timeValues.put("time", time);
-        timeValues.put("when_added", getNowFormatted());
-        db.insert("time_intervals", "", timeValues);
+        if (time > 0) {
+            ContentValues timeValues = new ContentValues();
+            timeValues.put("task_id", taskId);
+            timeValues.put("time", time);
+            timeValues.put("when_added", getNowFormatted());
+            db.insert("time_intervals", "", timeValues);
 
-        Cursor currentTimeCursor = db.rawQuery("SELECT real_time FROM tasks WHERE id = ?",
-                new String[]{Integer.toString(taskId)});
-        currentTimeCursor.moveToFirst();
-        int curentTaskTime = currentTimeCursor.getInt(currentTimeCursor.getColumnIndex("real_time"));
-        currentTimeCursor.close();
-        ContentValues updatedTimeValues = new ContentValues();
-        updatedTimeValues.put("real_time", curentTaskTime + time);
-        Log.i("TIME", "was " + curentTaskTime);
-        Log.i("TIME", "added " + time);
-        db.update("tasks", updatedTimeValues, "id = ?", new String[]{Integer.toString(taskId)});
+            Cursor currentTimeCursor = db.rawQuery("SELECT real_time FROM tasks WHERE id = ?",
+                    new String[]{Integer.toString(taskId)});
+            currentTimeCursor.moveToFirst();
+            int curentTaskTime = currentTimeCursor.getInt(currentTimeCursor.getColumnIndex("real_time"));
+            currentTimeCursor.close();
+            ContentValues updatedTimeValues = new ContentValues();
+            updatedTimeValues.put("real_time", curentTaskTime + time);
+            Log.i("TIME", "was " + curentTaskTime);
+            Log.i("TIME", "added " + time);
+            db.update("tasks", updatedTimeValues, "id = ?", new String[]{Integer.toString(taskId)});
+        }
     }
 
     private String getNowFormatted() {

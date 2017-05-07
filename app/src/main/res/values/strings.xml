@@ -108,4 +108,11 @@
         "<a href="http://www.flaticon.com/authors/dave-gandy" title="Dave Gandy">Dave Gandy</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>,\n"
         "<a href="http://www.flaticon.com/authors/madebyoliver" title="Madebyoliver">Madebyoliver</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>.\n\n"
     </string>
+
+    <string name="notification_title">Pomodoro time management</string>
+    <string name="notification_text_25">Pomodoro time interval ended</string>
+    <string name="notification_text_5">Pomodoro relax time ended. Time to work!</string>
+    <string name="_25_00">25:00</string>
+    <string name="flow">FLOW</string>
+    <string name="relax">RELAX</string>
 </resources>
