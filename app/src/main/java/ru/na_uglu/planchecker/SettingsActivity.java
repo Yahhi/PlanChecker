@@ -2,14 +2,18 @@ package ru.na_uglu.planchecker;
 
 
 import android.annotation.TargetApi;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -36,6 +40,7 @@ import java.util.List;
  * API Guide</a> for more information on developing a Settings UI.
  */
 public class SettingsActivity extends AppCompatPreferenceActivity {
+
     /**
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
@@ -109,6 +114,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         // guidelines.
         bindPreferenceSummaryToValue(findPreference("access_token"));
         bindPreferenceSummaryToValue(findPreference("notifications_ringtone"));
+
     }
 
     /**

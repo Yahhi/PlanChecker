@@ -124,6 +124,7 @@ class LocalData {
     void makeTaskDone(int taskId) {
         ContentValues values = new ContentValues();
         values.put("done", 1);
+        values.put("when_done", formatDate());
         db.update("tasks", values, "id = ?", new String[]{Integer.toString(taskId)});
     }
 
@@ -132,7 +133,7 @@ class LocalData {
             ContentValues timeValues = new ContentValues();
             timeValues.put("task_id", taskId);
             timeValues.put("time", time);
-            timeValues.put("when_added", getNowFormatted());
+            timeValues.put("when_added", formatDate());
             db.insert("time_intervals", "", timeValues);
 
             Cursor currentTimeCursor = db.rawQuery("SELECT real_time FROM tasks WHERE id = ?",
@@ -154,6 +155,14 @@ class LocalData {
         return currentDateTime;
     }
 
+    static String formatDate() {
+        Date date = new Date();
+        SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat format2 = new SimpleDateFormat("hh:mm:ss");
+        String formatResult = format1.format(date) + "T" + format2.format(date) + "Z";
+        return formatResult;
+    }
+
     int[] getFiveLastTimeIntervals(int taskId) {
         Cursor cursor = db.rawQuery("SELECT * FROM time_intervals WHERE task_id = ? ORDER BY id DESC",
                 new String[]{Integer.toString(taskId)});
@@ -168,6 +177,26 @@ class LocalData {
         return intervals;
     }
 
+    WhenhubEvent[] getAllTimeIntervals() {
+        Cursor cursor = db.rawQuery("SELECT * FROM time_intervals ORDER BY id ASC", null);
+        WhenhubEvent[] times = new WhenhubEvent[cursor.getCount()];
+        int i = 0;
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            int taskId = cursor.getInt(cursor.getColumnIndex("task_id"));
+            int time = cursor.getInt(cursor.getColumnIndex("time"));
+            String whenAdded = cursor.getString(cursor.getColumnIndex("when_added"));
+            Task task = getTask(taskId);
+            times[i++] = new WhenhubEvent(
+                    task.title + " (" + getProjectTitleForTask(taskId) + ")",
+                    whenAdded,
+                    time);
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return times;
+    }
+
     void saveTask(int taskId, int projectId, String title, int estimatedTime, String comment) {
         ContentValues values = new ContentValues();
         values.put("project_id", projectId);
@@ -175,6 +204,7 @@ class LocalData {
         values.put("estimated_time", estimatedTime);
         values.put("comment", comment);
         if (taskId == 0) {
+            values.put("when_created", formatDate());
             db.insert("tasks", "", values);
         } else {
             db.update("tasks", values, "id = ?", new String[]{Integer.toString(taskId)});
@@ -261,5 +291,25 @@ class LocalData {
 
     void deleteTask(int id) {
         db.delete("tasks", "id = ?", new String[]{Integer.toString(id)});
+    }
+
+    WhenhubEvent[] getAllAccuracyRates() {
+        Cursor cursor = db.rawQuery("SELECT * FROM tasks WHERE done > 0", null);
+        WhenhubEvent[] accuracyResults = new WhenhubEvent[cursor.getCount()];
+        cursor.moveToFirst();
+        int i = 0;
+        while (!cursor.isAfterLast()) {
+            int id = cursor.getInt(cursor.getColumnIndex("id"));
+            String title = cursor.getString(cursor.getColumnIndex("title")) +
+                    " (" + getProjectTitleForTask(id) + ")";
+            Integer realTime = cursor.getInt(cursor.getColumnIndex("real_time"));
+            Integer estimatedTime = cursor.getInt(cursor.getColumnIndex("estimated_time"));
+            Integer customField = NetworkSync.getAccuracyRate(realTime, estimatedTime);
+            String whenDone = cursor.getString(cursor.getColumnIndex("when_done"));
+            accuracyResults[i++] = new WhenhubEvent(title, whenDone, customField);
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return accuracyResults;
     }
 }

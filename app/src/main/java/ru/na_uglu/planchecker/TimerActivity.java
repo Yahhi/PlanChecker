@@ -1,34 +1,31 @@
 package ru.na_uglu.planchecker;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.SystemClock;
+import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.Chronometer;
 import android.widget.TextView;
 
-import static android.R.attr.fragment;
-
 public class TimerActivity extends AppCompatActivity implements OnFragmentTimeAddedListener {
-    private Chronometer chronometer;
-    long chronometerBase;
 
     int taskId;
     private int realTime;
     private boolean pomodoroMode = false;
     private timeIsGoing timingFragment;
+
+    boolean mBound;
+    NetworkSync timeService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +33,10 @@ public class TimerActivity extends AppCompatActivity implements OnFragmentTimeAd
         setContentView(R.layout.activity_timer);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        if (NetworkSync.isSyncAvailable(getBaseContext())) {
+            startService(new Intent(this, NetworkSync.class));
+        }
 
         Intent intent = getIntent();
         taskId = intent.getIntExtra("taskId", 0);
@@ -57,9 +58,11 @@ public class TimerActivity extends AppCompatActivity implements OnFragmentTimeAd
         TextView taskTitle = (TextView) findViewById(R.id.chronometer_task_title);
         taskTitle.setText(task.title);
         TextView projectTitle = (TextView) findViewById(R.id.chronometer_project_title);
-        projectTitle.setText(data.getProjectTitleForTask(taskId));
-        TextView estimatedTime = (TextView) findViewById(R.id.chronometer_estimated_task_time);
-        estimatedTime.setText(Task.formatTimeInHoursAndMinutes(task.plannedTime));
+        String title = data.getProjectTitleForTask(taskId);
+        projectTitle.setText(title);
+        title = task.title + " (" + title + ")";
+        TextView estimatedTimeText = (TextView) findViewById(R.id.chronometer_estimated_task_time);
+        estimatedTimeText.setText(Task.formatTimeInHoursAndMinutes(task.plannedTime));
         realTime = task.realTime;
         showRealTime();
         int[] lastTimerIntervals = data.getFiveLastTimeIntervals(taskId);
@@ -67,13 +70,22 @@ public class TimerActivity extends AppCompatActivity implements OnFragmentTimeAd
         data.closeDataConnection();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_task_done);
+        final String finalTitle = title;
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 LocalData data = new LocalData(getApplicationContext(), true);
                 data.makeTaskDone(taskId);
+                Task taskDone = data.getTask(taskId);
                 data.closeDataConnection();
                 setResult(Activity.RESULT_OK);
+                if (mBound) {
+                    timeService.createEventForAccuracy(new WhenhubEvent(
+                            finalTitle,
+                            LocalData.formatDate(),
+                            NetworkSync.getAccuracyRate(taskDone.realTime, taskDone.plannedTime))
+                    );
+                }
                 finish();
             }
         });
@@ -184,7 +196,47 @@ public class TimerActivity extends AppCompatActivity implements OnFragmentTimeAd
         int[] lastTimerIntervals = data.getFiveLastTimeIntervals(taskId);
         showFiveLastTimersIntervals(lastTimerIntervals);
         data.closeDataConnection();
+
+        if (mBound) {
+            TextView taskTitle = (TextView) findViewById(R.id.chronometer_task_title);
+            TextView projectTitle = (TextView) findViewById(R.id.chronometer_project_title);
+            String title = taskTitle.getText().toString() +
+                    " (" + projectTitle.getText().toString() + ")";
+            timeService.createEventForTimeIntervals(new WhenhubEvent(title, LocalData.formatDate(), timeInMinutes));
+        }
+
         setResult(Activity.RESULT_OK);
     }
 
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Intent intent = new Intent(this, NetworkSync.class);
+        bindService(intent, networkConnection, BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mBound) {
+            unbindService(networkConnection);
+            mBound = false;
+        }
+    }
+
+    private ServiceConnection networkConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            NetworkSync.LocalBinder myLocalBinder = (NetworkSync.LocalBinder) service;
+            timeService = myLocalBinder.getService();
+            mBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            timeService = null;
+            mBound = false;
+        }
+    };
 }

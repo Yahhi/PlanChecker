@@ -1,9 +1,15 @@
 package ru.na_uglu.planchecker;
 
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
+import android.os.IBinder;
+import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -13,8 +19,6 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ExpandableListView;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -25,12 +29,21 @@ public class MainActivity extends AppCompatActivity {
     static final int REQUEST_PROJECT_EDITION = 399;
     static final int REQUEST_TASK_EDITION = 398;
 
+    boolean neededAccessToken;
+
+    boolean mBound;
+    NetworkSync timeService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        if (NetworkSync.isSyncAvailable(getBaseContext())) {
+            startService(new Intent(this, NetworkSync.class));
+        }
 
         FloatingActionButton fab_project = (FloatingActionButton) findViewById(R.id.fab_add_project);
         fab_project.setOnClickListener(new View.OnClickListener() {
@@ -178,16 +191,68 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
+            PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(accessTokenListener);
             return true;
         } else if (id == R.id.info_menu_item) {
             Intent intent = new Intent(this, InfoActivity.class);
             startActivity(intent);
             return true;
-        } else if (id == R.id.whenhub_menu_item) {
-            //TODO open whenhub for user
+        } else if (id == R.id.whenhub_accuracy) {
+            openWhenhub("planning accuracy");
+        } else if (id == R.id.whenhub_calendar) {
+            openWhenhub("working resume");
+        } else if (id == R.id.test) {
+            timeService.saveViewCode(timeService.getWorkingScheduleId(), "workingViewCode");
+            timeService.saveViewCode(timeService.getAccuracyScheduleId(), "accuracyViewCode");
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void openWhenhub(String whichPageToOpen) {
+        DialogInterface.OnClickListener wannaGoWhenhub = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        String link = "https://studio.whenhub.com/account/";
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+                        startActivity(browserIntent);
+                        break;
+                }
+            }
+        };
+        if (mBound) {
+            String link;
+            if (whichPageToOpen.equals("working resume")) {
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+                String scheduleId = preferences.getString("workingScheduleId", "");
+                String viewCode = preferences.getString("workingViewCode", "");
+                link = "https://studio.whenhub.com/schedules/" + scheduleId + "/working-resume/?viewCode=" + viewCode;
+            } else {
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+                String scheduleId = preferences.getString("accuracyScheduleId", "");
+                String viewCode = preferences.getString("accuracyViewCode", "");
+                link = "https://studio.whenhub.com/schedules/" + scheduleId + "/planning-accuracy/?viewCode=" + viewCode;
+            }
+            Log.i("VOLLEY", link);
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+            startActivity(browserIntent);
+        } else {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            dialog.setTitle(R.string.whenhub_access);
+            dialog.setMessage(R.string.provide_access_token);
+            dialog.setNegativeButton(R.string.no, wannaGoWhenhub);
+            dialog.setPositiveButton(R.string.yes, wannaGoWhenhub);
+            dialog.setCancelable(false);
+            dialog.show();
+        }
+    }
+
+    void createEventForAccuracy(WhenhubEvent event) {
+        if (mBound) {
+            timeService.createEventForAccuracy(event);
+        }
     }
 
     @Override
@@ -204,4 +269,44 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Intent intent = new Intent(this, NetworkSync.class);
+        bindService(intent, networkConnection, BIND_AUTO_CREATE);
+    }
+
+    SharedPreferences.OnSharedPreferenceChangeListener accessTokenListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            if (key.equals("access_token") && !sharedPreferences.getString("access_token", "").equals("")) {
+                timeService.createSchedules();
+            }
+        }
+    };
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mBound) {
+            unbindService(networkConnection);
+            mBound = false;
+        }
+    }
+
+    private ServiceConnection networkConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            NetworkSync.LocalBinder myLocalBinder = (NetworkSync.LocalBinder) service;
+            timeService = myLocalBinder.getService();
+            mBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            timeService = null;
+            mBound = false;
+        }
+    };
 }

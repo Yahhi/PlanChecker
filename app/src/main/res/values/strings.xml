@@ -14,8 +14,8 @@
     <string name="edit_button">Edit button</string>
     <string name="timer_start_button">Timer start button</string>
     <string name="pomodoro_start_button">Pomodoro start button</string>
-    <string name="graph">Graph</string>
-    <string name="title_activity_timer">TimerActivity</string>
+    <string name="graph">Accuracy graph</string>
+    <string name="title_activity_timer">Timer</string>
     <string name="start_or_pause_chronometer_button">start or pause chronometer button</string>
     <string name="back_on_timer_activity_title">Do you want to stop timer?</string>
     <string name="back_on_timer_activity">The task is still in progress. Do you want to stop working on this task?</string>
@@ -115,4 +115,7 @@
     <string name="_25_00">25:00</string>
     <string name="flow">FLOW</string>
     <string name="relax">RELAX</string>
+    <string name="whenhub_access">Whenhub access</string>
+    <string name="provide_access_token">To use this feature you should register at Whenhub.com and save access token in settings</string>
+    <string name="work_graph">Work graph</string>
 </resources>

@@ -167,6 +167,13 @@ class ProjectTaskListAdapter extends BaseExpandableListAdapter {
                                 data.makeTaskDone(projects.get(groupPosition).tasks.get(childPosition).id);
                                 data.closeDataConnection();
 
+                                String title = projects.get(groupPosition).title +
+                                        " (" + projects.get(groupPosition).tasks.get(childPosition).title + ")";
+                                int realTime = projects.get(groupPosition).tasks.get(childPosition).realTime;
+                                int estimatedTime = projects.get(groupPosition).tasks.get(childPosition).plannedTime;
+                                int customField = NetworkSync.getAccuracyRate(realTime, estimatedTime);
+                                ((MainActivity) context).createEventForAccuracy(new WhenhubEvent(title, LocalData.formatDate(), customField));
+
                                 projects.get(groupPosition).tasks.remove(childPosition);
                                 notifyDataSetChanged();
                             }

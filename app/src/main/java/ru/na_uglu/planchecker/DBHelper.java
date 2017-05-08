@@ -8,7 +8,7 @@ class DBHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "projectChecker.db";
 
     DBHelper(Context context) {
-        super(context, DATABASE_NAME, null, 4);
+        super(context, DATABASE_NAME, null, 7);
     }
 
     @Override
@@ -26,9 +26,10 @@ class DBHelper extends SQLiteOpenHelper {
                 "`project_id` INTEGER NOT NULL, " +
                 "`estimated_time` INTEGER, " +
                 "`real_time` INTEGER, " +
-                "`pomodoros` INTEGER, " +
                 "`comment` TEXT, " +
-                "`done` INTEGER DEFAULT 0 )");
+                "`when_created` TEXT, " +
+                "`done` INTEGER DEFAULT 0, " +
+                "`when_done` TEXT)");
         insertTasksData(db);
 
         db.execSQL("CREATE TABLE `time_intervals` (" +
@@ -44,9 +45,9 @@ class DBHelper extends SQLiteOpenHelper {
     }
 
     private void insertTasksData(SQLiteDatabase db) {
-        db.execSQL("INSERT INTO `tasks` VALUES (1,'Create recipes list',1,50,0,2,'',0);");
-        db.execSQL("INSERT INTO `tasks` VALUES (2,'Fill recipes list',1,100,0,4,'',0);");
-        db.execSQL("INSERT INTO `tasks` VALUES (3,'Create landscape xmls',1,25,0,1,'',0);");
+        db.execSQL("INSERT INTO `tasks` VALUES (1,'Create recipes list',1,50,0,'', '',0, '');");
+        db.execSQL("INSERT INTO `tasks` VALUES (2,'Fill recipes list',1,100,0,'','',0, '');");
+        db.execSQL("INSERT INTO `tasks` VALUES (3,'Create landscape xmls',1,25,0,'','',0, '');");
     }
 
     @Override

@@ -30,8 +30,8 @@ import java.util.concurrent.TimeUnit;
 
 public class PomodoroFragment extends Fragment implements timeIsGoing {
 
-    private static int TIME25MINUTES = 25 * 60;
-    private static int TIME5MINUTES = 5 * 60;
+    private static int TIME25MINUTES = 2 * 60;
+    private static int TIME5MINUTES = 1 * 60;
 
     private PomodoroStatus pomodoroStatus = PomodoroStatus.notActive;
     private long pomodoroBase;
@@ -54,23 +54,30 @@ public class PomodoroFragment extends Fragment implements timeIsGoing {
             Log.i("POMODORO", "Status changed from " + pomodoroStatus.toString());
             boolean over25minutes = intent.getBooleanExtra("inform25minutes", true);
             if (over25minutes) {
-                showFlowRelaxButtons();
-                pomodoroStatus = PomodoroStatus.ended;
-                pomodoroTimeForUser.setText("00:00");
+                statusChangeFromActiveToEnded();
             } else {
-                playPauseButton.setBackgroundResource(R.drawable.ic_play_circle_filled_24dp);
-                pomodoroStatus = PomodoroStatus.notActive;
-                pomodoroTimeForUser.setText("25:00");
+                statusChangeFromRelaxToNotActive();
             }
             Log.i("POMODORO", "to " + pomodoroStatus.toString());
         }
     };
 
+    private void statusChangeFromRelaxToNotActive() {
+        playPauseButton.setBackgroundResource(R.drawable.ic_play_circle_filled_24dp);
+        pomodoroStatus = PomodoroStatus.notActive;
+        pomodoroTimeForUser.setText("25:00");
+    }
+
+    private void statusChangeFromActiveToEnded() {
+        showFlowRelaxButtons();
+        pomodoroStatus = PomodoroStatus.ended;
+    }
+
     private void showFlowRelaxButtons() {
+        pomodoroTimeForUser.setText("00:00");
         playPauseButton.setVisibility(View.INVISIBLE);
         flowButton.setVisibility(View.VISIBLE);
         relaxButton.setVisibility(View.VISIBLE);
-        pomodoroStatus = PomodoroStatus.ended;
     }
 
     public PomodoroFragment() {
@@ -84,36 +91,40 @@ public class PomodoroFragment extends Fragment implements timeIsGoing {
         updateTimeOnUI.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
-                if (pomodoroStatus.equals(PomodoroStatus.active)) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            pomodoroTimeForUser.setText(
-                                    formatTimeInMinutesAndSeconds(
-                                            (whenToStopInMillis - SystemClock.elapsedRealtime())));
-                        }
-                    });
-                } else if (pomodoroStatus.equals(PomodoroStatus.flow)) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            pomodoroTimeForUser.setText(
-                                    "25:00 + " + formatTimeInMinutesAndSeconds(
-                                            (SystemClock.elapsedRealtime() - pomodoroBase - TIME25MINUTES * 1000)));
-                        }
-                    });
-                } else if (pomodoroStatus.equals(PomodoroStatus.relax)) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            pomodoroTimeForUser.setText(
-                                    formatTimeInMinutesAndSeconds(
-                                            (whenToStopInMillis - SystemClock.elapsedRealtime())));
-                        }
-                    });
-                }
+                changeTimeValues();
             }
         }, 1, 1, TimeUnit.SECONDS);
+    }
+
+    private void changeTimeValues() {
+        if (pomodoroStatus.equals(PomodoroStatus.active)) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    pomodoroTimeForUser.setText(
+                            formatTimeInMinutesAndSeconds(
+                                    (whenToStopInMillis - SystemClock.elapsedRealtime())));
+                }
+            });
+        } else if (pomodoroStatus.equals(PomodoroStatus.flow)) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    pomodoroTimeForUser.setText(
+                            "25:00 + " + formatTimeInMinutesAndSeconds(
+                                    (SystemClock.elapsedRealtime() - pomodoroBase - TIME25MINUTES * 1000)));
+                }
+            });
+        } else if (pomodoroStatus.equals(PomodoroStatus.relax)) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    pomodoroTimeForUser.setText(
+                            formatTimeInMinutesAndSeconds(
+                                    (whenToStopInMillis - SystemClock.elapsedRealtime())));
+                }
+            });
+        }
     }
 
     private String formatTimeInMinutesAndSeconds(long timeInMillis) {
@@ -267,7 +278,6 @@ public class PomodoroFragment extends Fragment implements timeIsGoing {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-        cancelAlarm();
         updateTimeOnUI.shutdown();
     }
 
@@ -298,7 +308,8 @@ public class PomodoroFragment extends Fragment implements timeIsGoing {
     public void onResume() {
         super.onResume();
         getActivity().registerReceiver(receiver, new IntentFilter("ru.na-uglu.planchecker"));
-        //restoreImportantVariables();
+        restoreImportantVariables();
+        changeTimeValues();
     }
 
     private void restoreImportantVariables() {
@@ -307,6 +318,23 @@ public class PomodoroFragment extends Fragment implements timeIsGoing {
         pomodoroBase = preferences.getLong("pomodoroBase", 0);
         pomodoroDone = preferences.getLong("pomodoroDone", 0);
         whenToStopInMillis = preferences.getLong("whenToStopInMillis", 0);
+        if (pomodoroStatus == PomodoroStatus.active) {
+            if (whenToStopInMillis <= SystemClock.elapsedRealtime()) {
+                statusChangeFromActiveToEnded();
+            } else {
+                playPauseButton.setBackgroundResource(R.drawable.ic_pause_circle_filled_black_24dp);
+            }
+        } else if (pomodoroStatus == PomodoroStatus.relax) {
+            if (whenToStopInMillis <= SystemClock.elapsedRealtime()) {
+                statusChangeFromRelaxToNotActive();
+            } else {
+                playPauseButton.setBackgroundResource(R.drawable.ic_skip);
+            }
+        } else if (pomodoroStatus == PomodoroStatus.ended) {
+            showFlowRelaxButtons();
+        } else if (pomodoroStatus == PomodoroStatus.flow) {
+            playPauseButton.setBackgroundResource(R.drawable.ic_stop);
+        }
     }
 
     @Override
