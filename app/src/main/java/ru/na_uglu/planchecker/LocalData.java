@@ -143,15 +143,12 @@ class LocalData {
             currentTimeCursor.close();
             ContentValues updatedTimeValues = new ContentValues();
             updatedTimeValues.put("real_time", curentTaskTime + time);
-            Log.i("TIME", "was " + curentTaskTime);
-            Log.i("TIME", "added " + time);
             db.update("tasks", updatedTimeValues, "id = ?", new String[]{Integer.toString(taskId)});
         }
     }
 
     private String getNowFormatted() {
         String currentDateTime = DateFormat.getDateTimeInstance().format(new Date());
-        Log.i("TIME", "at " + currentDateTime);
         return currentDateTime;
     }
 

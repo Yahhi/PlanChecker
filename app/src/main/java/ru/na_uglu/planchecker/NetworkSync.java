@@ -63,7 +63,7 @@ public class NetworkSync extends Service {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.i("JSON", params.toString());
+        //Log.i("JSON", params.toString());
         return params;
     }
 
@@ -72,7 +72,7 @@ public class NetworkSync extends Service {
         Response.ErrorListener commonErrorListener = new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.i("VOLLEY", "didn't work");
+                //Log.i("VOLLEY", "didn't work");
             }
         };
 
@@ -105,7 +105,7 @@ public class NetworkSync extends Service {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        Log.i("VOLLEY", "scheduleID = " + scheduleId);
+                        //Log.i("VOLLEY", "scheduleID = " + scheduleId);
                     }
                 },
                 commonErrorListener);
@@ -138,7 +138,7 @@ public class NetworkSync extends Service {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        Log.i("VOLLEY", "scheduleID = " + scheduleId);
+                        //Log.i("VOLLEY", "scheduleID = " + scheduleId);
                     }
                 },
                 commonErrorListener);
@@ -150,7 +150,7 @@ public class NetworkSync extends Service {
         Response.ErrorListener commonErrorListener = new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.i("VOLLEY", "didn't work");
+                //Log.i("VOLLEY", "didn't work");
             }
         };
 
@@ -158,7 +158,7 @@ public class NetworkSync extends Service {
         int charCode = scheduleId.charAt(scheduleId.length() - 1);
         whencastId += (char) (charCode+1);
         String url = formatURLWithToken("https://api.whenhub.com/api/schedules/" + scheduleId + "/whencasts/" + whencastId);
-        Log.i("VOLLEY", scheduleId + " and " + whencastId);
+        //Log.i("VOLLEY", scheduleId + " and " + whencastId);
 
         JSONObject whencast = new JSONObject();
         try {
@@ -193,7 +193,7 @@ public class NetworkSync extends Service {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.i("VOLLEY", response.toString());
+                        //Log.i("VOLLEY", response.toString());
                     }
                 },
                 commonErrorListener);
@@ -205,7 +205,7 @@ public class NetworkSync extends Service {
         Response.ErrorListener commonErrorListener = new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.i("VOLLEY", "didn't work");
+                //Log.i("VOLLEY", "didn't work");
             }
         };
         String url = formatURLWithToken("https://api.whenhub.com/api/schedules/" + scheduleId);
@@ -225,7 +225,7 @@ public class NetworkSync extends Service {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        Log.i("VOLLEY", response.toString());
+                        //Log.i("VOLLEY", response.toString());
                     }
                 },
                 commonErrorListener);
@@ -242,7 +242,7 @@ public class NetworkSync extends Service {
         Response.ErrorListener commonErrorListener = new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.i("VOLLEY", "didn't work");
+                //Log.i("VOLLEY", "didn't work");
             }
         };
 
@@ -279,12 +279,12 @@ public class NetworkSync extends Service {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.i("VOLLEY", params.toString());
+        //Log.i("VOLLEY", params.toString());
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
 
-                Log.i("VOLLEY", response.toString());
+                //Log.i("VOLLEY", response.toString());
             }
         }, commonErrorListener);
         queue.add(jsonObjectRequest);
@@ -318,19 +318,19 @@ public class NetworkSync extends Service {
 
     public static int getAccuracyRate(int realTime, int estimatedTime) {
         int customField;
-        Log.i("MATH", "numbers: " + realTime + " " + estimatedTime);
+        //Log.i("MATH", "numbers: " + realTime + " " + estimatedTime);
         if (realTime > estimatedTime) {
             if (realTime == 0) {
                 customField = 0;
             } else {
                 customField = (int) Math.ceil(estimatedTime * 100 / realTime);
-                Log.i("MATH", "inside: " + (estimatedTime * 100 / realTime));
+                //Log.i("MATH", "inside: " + (estimatedTime * 100 / realTime));
             }
         } else {
             customField = (int) Math.ceil(realTime * 100 / estimatedTime);
-            Log.i("MATH", "inside: " + (realTime * 100 / estimatedTime));
+            //Log.i("MATH", "inside: " + (realTime * 100 / estimatedTime));
         }
-        Log.i("MATH", "final: " + customField);
+        //Log.i("MATH", "final: " + customField);
         return customField;
     }
 

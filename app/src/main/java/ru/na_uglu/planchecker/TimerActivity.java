@@ -43,6 +43,7 @@ public class TimerActivity extends AppCompatActivity implements OnFragmentTimeAd
         pomodoroMode = intent.getBooleanExtra("pomodoroMode", false);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         if (pomodoroMode) {
+            this.setTitle(R.string.title_activity_timer_pomodoro);
             PomodoroFragment fragment = new PomodoroFragment();
             timingFragment = fragment;
             transaction.add(R.id.place_for_timer, fragment);

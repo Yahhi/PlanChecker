@@ -232,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
                 String viewCode = preferences.getString("accuracyViewCode", "");
                 link = "https://studio.whenhub.com/schedules/" + scheduleId + "/planning-accuracy/?viewCode=" + viewCode;
             }
-            Log.i("VOLLEY", link);
+            //Log.i("VOLLEY", link);
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
             startActivity(browserIntent);
         } else {
