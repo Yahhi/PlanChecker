@@ -98,12 +98,14 @@ public class NetworkSync extends Service {
                                 createEvent(event, scheduleId);
                             }
                             data.closeDataConnection();
+
+                            createScheduleViewType(scheduleId, "line");
+
+                            saveViewCode(scheduleId, "workingViewCode");
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        Log.i("VOLLEY", scheduleId);
-
-                        saveViewCode(scheduleId, "accuracyViewCode");
+                        Log.i("VOLLEY", "scheduleID = " + scheduleId);
                     }
                 },
                 commonErrorListener);
@@ -130,15 +132,72 @@ public class NetworkSync extends Service {
                             }
                             data.closeDataConnection();
 
+                            createScheduleViewType(scheduleId, "stacked-column");
+
                             saveViewCode(scheduleId, "workingViewCode");
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        Log.i("VOLLEY", scheduleId);
+                        Log.i("VOLLEY", "scheduleID = " + scheduleId);
                     }
                 },
                 commonErrorListener);
         queue.add(stringRequest2);
+    }
+
+    private void createScheduleViewType(String scheduleId, String viewName) {
+        RequestQueue queue = Volley.newRequestQueue(this);
+        Response.ErrorListener commonErrorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.i("VOLLEY", "didn't work");
+            }
+        };
+
+        String whencastId = scheduleId.substring(0, scheduleId.length() - 1);
+        int charCode = scheduleId.charAt(scheduleId.length() - 1);
+        whencastId += (char) (charCode+1);
+        String url = formatURLWithToken("https://api.whenhub.com/api/schedules/" + scheduleId + "/whencasts/" + whencastId);
+        Log.i("VOLLEY", scheduleId + " and " + whencastId);
+
+        JSONObject whencast = new JSONObject();
+        try {
+            JSONObject publisher = new JSONObject();
+            publisher.put("name", "whenhub");
+
+            JSONObject settings = new JSONObject();
+            settings.put("title", "Data from Plan Checker App");
+            settings.put("chartSubTitle", "");
+            settings.put("legendLayout", "horizontal");
+            settings.put("horizontalAlign", "left");
+            settings.put("verticalAlign", "bottom");
+
+            JSONObject generalSettings = new JSONObject();
+            generalSettings.put("theme", "red");
+            generalSettings.put("eventlist", "nearest");
+
+            whencast.put("id", whencastId);
+            whencast.put("name", "charts");
+            whencast.put("publisher", publisher);
+            whencast.put("viewName", viewName);
+            whencast.put("settings", settings);
+            whencast.put("theme", "red");
+            whencast.put("generalSettings", generalSettings);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest stringRequest = new JsonObjectRequest(
+                Request.Method.PUT, url,
+                whencast,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i("VOLLEY", response.toString());
+                    }
+                },
+                commonErrorListener);
+        queue.add(stringRequest);
     }
 
     void saveViewCode(String scheduleId, final String preferencesTitle) {

@@ -201,9 +201,6 @@ public class MainActivity extends AppCompatActivity {
             openWhenhub("planning accuracy");
         } else if (id == R.id.whenhub_calendar) {
             openWhenhub("working resume");
-        } else if (id == R.id.test) {
-            timeService.saveViewCode(timeService.getWorkingScheduleId(), "workingViewCode");
-            timeService.saveViewCode(timeService.getAccuracyScheduleId(), "accuracyViewCode");
         }
 
         return super.onOptionsItemSelected(item);

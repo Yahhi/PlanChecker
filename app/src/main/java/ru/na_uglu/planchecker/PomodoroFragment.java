@@ -79,6 +79,11 @@ public class PomodoroFragment extends Fragment implements timeIsGoing {
         flowButton.setVisibility(View.VISIBLE);
         relaxButton.setVisibility(View.VISIBLE);
     }
+    private void hideFlowRelaxButtons() {
+        playPauseButton.setVisibility(View.VISIBLE);
+        flowButton.setVisibility(View.INVISIBLE);
+        relaxButton.setVisibility(View.INVISIBLE);
+    }
 
     public PomodoroFragment() {
         // Required empty public constructor
@@ -322,7 +327,7 @@ public class PomodoroFragment extends Fragment implements timeIsGoing {
             if (whenToStopInMillis <= SystemClock.elapsedRealtime()) {
                 statusChangeFromActiveToEnded();
             } else {
-                playPauseButton.setBackgroundResource(R.drawable.ic_pause_circle_filled_black_24dp);
+                hideFlowRelaxButtons();
             }
         } else if (pomodoroStatus == PomodoroStatus.relax) {
             if (whenToStopInMillis <= SystemClock.elapsedRealtime()) {
