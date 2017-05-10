@@ -109,4 +109,24 @@
     <string name="whenhub_access">Whenhub access</string>
     <string name="provide_access_token">To use this feature you should register at Whenhub.com and save access token in settings</string>
     <string name="work_graph">Work graph</string>
+    <string name="add_time">Add time</string>
+    <string name="add_task">Add task</string>
+    <string name="add_project">Add project</string>
+
+    <string name="project_foreign_language">Foreign language mastery</string>
+    <string name="project_foreign_language_comment">What to do to make my Spanish better</string>
+    <string name="project_blogging">Blogging</string>
+    <string name="project_app">My app project</string>
+    <string name="task_read_story">Read story in new book</string>
+    <string name="task_grammar">Look through grammar</string>
+    <string name="task_new_words">Remember new words</string>
+    <string name="task_choose_theme">Choose the most popular theme on Quora</string>
+    <string name="task_choose_theme_comment">Need to write about interesting themes</string>
+    <string name="task_find_5_articles">Find and read 10 articles on the theme</string>
+    <string name="task_make_plan">Make a plan for my own article</string>
+    <string name="task_wireframes">Draw wireframes</string>
+    <string name="task_database">Create database structure</string>
+    <string name="task_dbhelper">Write DBHelper class</string>
+    <string name="task_write_code">Write code for alarm broadcast receiver</string>
+    <string name="task_activity">Create activity for database edition</string>
 </resources>

@@ -45,7 +45,7 @@
             app:fab_addButtonColorPressed="@color/colorPrimaryDark"
             app:fab_icon="@drawable/ic_history_white_24dp"
             app:fab_size="mini"
-            app:fab_title="Add time"/>
+            app:fab_title="@string/add_time"/>
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_add_task"
@@ -56,7 +56,7 @@
             app:fab_addButtonColorPressed="@color/colorPrimaryDark"
             app:fab_icon="@drawable/ic_blank_file"
             app:fab_size="mini"
-            app:fab_title="Add task"/>
+            app:fab_title="@string/add_task"/>
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_add_project"
@@ -67,7 +67,7 @@
             app:fab_addButtonColorPressed="@color/colorPrimaryDark"
             app:fab_icon="@drawable/ic_folder_open_white_24dp"
             app:fab_size="mini"
-            app:fab_title="Add project"/>
+            app:fab_title="@string/add_project"/>
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
 

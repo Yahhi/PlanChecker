@@ -150,7 +150,7 @@ public class TimerActivity extends AppCompatActivity implements OnFragmentTimeAd
         AlertDialog.Builder wannaStopDialog = new AlertDialog.Builder(this);
         wannaStopDialog.setTitle(R.string.back_on_timer_activity_title);
         wannaStopDialog.setMessage(R.string.back_on_timer_activity);
-        wannaStopDialog.setNegativeButton(R.string.no, wannaStopTimer);
+        wannaStopDialog.setNegativeButton(R.string.no, null);
         wannaStopDialog.setPositiveButton(R.string.yes, wannaStopTimer);
         wannaStopDialog.setCancelable(false);
         wannaStopDialog.show();
@@ -198,7 +198,7 @@ public class TimerActivity extends AppCompatActivity implements OnFragmentTimeAd
         showFiveLastTimersIntervals(lastTimerIntervals);
         data.closeDataConnection();
 
-        if (mBound) {
+        if (NetworkSync.isSyncAvailable(getBaseContext())) {
             TextView taskTitle = (TextView) findViewById(R.id.chronometer_task_title);
             TextView projectTitle = (TextView) findViewById(R.id.chronometer_project_title);
             String title = taskTitle.getText().toString() +

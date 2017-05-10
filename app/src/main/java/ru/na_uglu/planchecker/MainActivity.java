@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setTitle(dialogTitle);
         dialog.setMessage(dialogMessage);
-        dialog.setNegativeButton(R.string.no, listener);
+        dialog.setNegativeButton(R.string.no, null);
         dialog.setPositiveButton(R.string.yes, listener);
         dialog.setCancelable(false);
         dialog.show();
@@ -219,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
-        if (mBound) {
+        if (NetworkSync.isSyncAvailable(getBaseContext())) {
             String link;
             if (whichPageToOpen.equals("working resume")) {
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
@@ -239,7 +239,7 @@ public class MainActivity extends AppCompatActivity {
             AlertDialog.Builder dialog = new AlertDialog.Builder(this);
             dialog.setTitle(R.string.whenhub_access);
             dialog.setMessage(R.string.provide_access_token);
-            dialog.setNegativeButton(R.string.no, wannaGoWhenhub);
+            dialog.setNegativeButton(R.string.no, null);
             dialog.setPositiveButton(R.string.yes, wannaGoWhenhub);
             dialog.setCancelable(false);
             dialog.show();
@@ -247,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void createEventForAccuracy(WhenhubEvent event) {
-        if (mBound) {
+        if (NetworkSync.isSyncAvailable(getBaseContext())) {
             timeService.createEventForAccuracy(event);
         }
     }
