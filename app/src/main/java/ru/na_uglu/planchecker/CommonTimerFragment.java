@@ -3,6 +3,7 @@ package ru.na_uglu.planchecker;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -40,6 +41,8 @@ public class CommonTimerFragment extends Fragment implements timeIsGoing {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_common_timer, container, false);
         chronometer = (Chronometer) view.findViewById(R.id.chronometer);
+        Typeface tf = Typeface.createFromAsset(getContext().getAssets(), "Digit.TTF");
+        chronometer.setTypeface(tf);
         playPauseButton = (Button) view.findViewById(R.id.button_play_pause_timer);
         playPauseButton.setOnClickListener(new View.OnClickListener() {
             @Override

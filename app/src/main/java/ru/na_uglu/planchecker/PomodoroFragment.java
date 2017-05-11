@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -155,6 +156,8 @@ public class PomodoroFragment extends Fragment implements timeIsGoing {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_pomodoro, container, false);
         pomodoroTimeForUser = (TextView) view.findViewById(R.id.pomodoro_time);
+        Typeface tf = Typeface.createFromAsset(getContext().getAssets(), "Digit.TTF");
+        pomodoroTimeForUser.setTypeface(tf);
         playPauseButton = (Button) view.findViewById(R.id.button_play_pause_pomodoro);
         playPauseButton.setOnClickListener(new View.OnClickListener() {
             @Override

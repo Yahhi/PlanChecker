@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Plan Checker</string>
+    <string name="app_name">Точный план</string>
     <string name="action_settings">Настройки</string>
     <string name="back_on_timer_activity_title">Хотите остановить таймер?</string>
     <string name="comment">Комментарий</string>
@@ -15,13 +15,13 @@
     <string name="additional_working_time">Дополнительное время</string>
     <string name="delete_task_dialog">Вы действительно хотите удалить эту задачу?</string>
     <string name="edit_button">Кнопка редактирования</string>
-    <string name="estimated_task_time">Планируемое время:</string>
-    <string name="estimated_time">Планируемое время:</string>
+    <string name="estimated_task_time">По плану:</string>
+    <string name="estimated_time">По плану:</string>
     <string name="in_project">В проекте</string>
     <string name="pref_default_token">64 символа из профиля в WHENHUB Studio</string>
-    <string name="pomodoro_start_button">Кнопка запуска таймера Помодоро</string>
-    <string name="notification_title">Тайм-менеджмент по технологии Помодоро</string>
-    <string name="notification_text_5">Перерыв между интервалами Помодоро завершен. Пора за работу!</string>
+    <string name="pomodoro_start_button">Кнопка запуска таймера Помидоро</string>
+    <string name="notification_title">Тайм-менеджмент по технологии Помидоро</string>
+    <string name="notification_text_5">Перерыв между интервалами Помидоро завершен. Пора за работу!</string>
     <string name="notification_text_25">Можно завершать работу над задачей. 25 минут прошло</string>
     <string name="make_project_done_dialog">Переместить проект в архив?</string>
     <string name="make_task_done">Завершить задачу</string>
@@ -39,13 +39,13 @@
     <string name="whenhub_access">Доступ к Whenhub</string>
     <string name="vertical_action_divider">Вертикальная разделительная черта</string>
     <string name="total_task_time">Общее время:</string>
-    <string name="title_activity_timer_pomodoro">Таймер Помодоро</string>
+    <string name="title_activity_timer_pomodoro">Таймер Помидоро</string>
     <string name="title_activity_timer">Таймер</string>
     <string name="title_activity_settings">Настройки</string>
     <string name="provide_access_token">Чтобы использовать эту функцию, необходимо зарегистрироваться на сайте whenhub.com и сохранить в настройках приложения access token</string>
     <string name="pref_description_integration">Whenhub - сервис, который позволяет по-новому работать с данными о продуктивности, получать эффектные графики и делиться ими с другими пользователями</string>
     <string name="pref_integration_enable">Включить поддержку Whenhub</string>
-    <string name="pref_title_new_message_notifications">Сообщение о завершении интервала Помодоро</string>
+    <string name="pref_title_new_message_notifications">Интервал Помидоро</string>
     <string name="real_time">"/ Фактическое время: "</string>
     <string name="save_project">Сохранить проект</string>
     <string name="start_or_pause_chronometer_button">Начать или прервать отсчет времени</string>
@@ -55,8 +55,8 @@
     <string name="timer_start_button">Начать отсчет времени</string>
     <string name="title_activity_info">Информация</string>
     <string name="pref_access_token">Access Token</string>
-    <string name="relax">Расслабиться</string>
-    <string name="large_text">Тайм-менеджмент - один из наиболее важных навыков успешного человека.\nВремя - единственный ресурс, который нельзя взять взаймы или обновить. В сутках у каждого человека есть ровно 24 часа \nи чаще всего намного меньше половины этого времени доступно для наших проектов, работы и учебы.\nЧтобы быть успешным человеком, необходимо планировать свое время и использовать его настолько эффективно, насколько возможно.\nЭто приложение может помочь Вам в планировании своих проектов, избавлении от прокрастинации и улучшении своих навыков планирования.\n\nТехника Помодоро.\nМетод «Помидора» — техника управления временем, предложенная Франческо Чирилло в конце 1980-х.\n Техника предполагает разбиение задач на 25-минутные периоды, называемые «помидоры», сопровождаемые короткими перерывами.\n Рабочее (или учебное) время разделяется на 25 минутные интервалы, между которыми добавляются короткие (чаще всего 5 минутные) перерывы.\n Техника названа в честь итальянского слова Pomodoro, так как именно такой кухонный таймер в форме этого продукта изначально \n использовал автор методики. Основная цель использования методики - снизить влияние на выполняемую работу внешних и внутренних отвлекающих факторов.\n \n Этапы применения техники:\n 1 фаза: планирование. Задачи записываются в \"список дел\" согласно своей важности. Это позволяет пользователю определить усилия, необходимые для выполнения задачи.\n 2 фаза: запуск таймера и выполнение задач. При этом количество рабочих интервалов записывается, что позволяет пользователю гордиться проделанной работой.\n 3 фаза: подведение итогов и самосовершенствование. Сколько интервалов в день в среднем Вы можете выполнить? Достаточно ли времени Вы уделяете той или иной задаче?\n \n Whenhub\n Whenhub предоставляет Вам возможность превратить информацию, связанную с временными интервалами в красивый интерактивный встраиваемый Whencast, \n который привлекает, обучает и обеспечивает дополнительным хронологическим контекстом.\n Plan Checker использует Whenhub, чтобы сохранять данные об интервалах работы над задачами и точности планирования. В результате Вы получаете графики, \n которые можно посмотреть на любом устройстве и поделиться с коллегами или друзьями.\n Чтобы узнать о Whenhub больше, посетите  <a href="https://www.whenhub.com/">whenhub.com</a>\n \n Иконки в приложении.\n Некоторые иконки в приложении были созданы и представлены авторами на сайте www.flaticon.com.\n Особые благодарности этим авторам: \n <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>,\n<a href="http://www.flaticon.com/authors/simpleicon" title="SimpleIcon">SimpleIcon</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>,\n <a href="http://www.flaticon.com/authors/dave-gandy" title="Dave Gandy">Dave Gandy</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>,\n<a href="http://www.flaticon.com/authors/madebyoliver" title="Madebyoliver">Madebyoliver</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>.</string>
+    <string name="relax">Перерыв</string>
+    <string name="large_text">Тайм-менеджмент - один из наиболее важных навыков успешного человека.\nВремя - единственный ресурс, который нельзя взять взаймы или обновить. В сутках у каждого человека есть ровно 24 часа \nи чаще всего намного меньше половины этого времени доступно для наших проектов, работы и учебы.\nЧтобы быть успешным человеком, необходимо планировать свое время и использовать его настолько эффективно, насколько возможно.\nЭто приложение может помочь Вам в планировании своих проектов, избавлении от прокрастинации и улучшении своих навыков планирования.\n\nТехника Помидоро.\nМетод «Помидора» — техника управления временем, предложенная Франческо Чирилло в конце 1980-х.\n Техника предполагает разбиение задач на 25-минутные периоды, называемые «помидоры», сопровождаемые короткими перерывами.\n Рабочее (или учебное) время разделяется на 25 минутные интервалы, между которыми добавляются короткие (чаще всего 5 минутные) перерывы.\n Техника названа в честь итальянского слова Pomodoro, так как именно такой кухонный таймер в форме этого продукта изначально \n использовал автор методики. Основная цель использования методики - снизить влияние на выполняемую работу внешних и внутренних отвлекающих факторов.\n \n Этапы применения техники:\n 1 фаза: планирование. Задачи записываются в \"список дел\" согласно своей важности. Это позволяет пользователю определить усилия, необходимые для выполнения задачи.\n 2 фаза: запуск таймера и выполнение задач. При этом количество рабочих интервалов записывается, что позволяет пользователю гордиться проделанной работой.\n 3 фаза: подведение итогов и самосовершенствование. Сколько интервалов в день в среднем Вы можете выполнить? Достаточно ли времени Вы уделяете той или иной задаче?\n \n Whenhub\n Whenhub предоставляет Вам возможность превратить информацию, связанную с временными интервалами в красивый интерактивный встраиваемый Whencast, \nкоторый привлекает, обучает и обеспечивает дополнительным хронологическим контекстом.\nПриложение использует Whenhub, чтобы сохранять данные об интервалах работы над задачами и точности планирования. В результате Вы получаете графики, \nкоторые можно посмотреть на любом устройстве и поделиться с коллегами или друзьями.\nЧтобы узнать о Whenhub больше, посетите  <a href="https://www.whenhub.com/">whenhub.com</a>\n \n Иконки в приложении.\n Некоторые иконки в приложении были созданы и представлены авторами на сайте www.flaticon.com.\n Особые благодарности этим авторам: \n <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>,\n<a href="http://www.flaticon.com/authors/simpleicon" title="SimpleIcon">SimpleIcon</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>,\n<a href="http://www.flaticon.com/authors/dave-gandy" title="Dave Gandy">Dave Gandy</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>,\n<a href="http://www.flaticon.com/authors/madebyoliver" title="Madebyoliver">Madebyoliver</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>.</string>
     <string name="add_project">Добавить проект</string>
     <string name="add_task">Добавить задачу</string>
     <string name="add_time">Добавить время работы</string>
@@ -78,4 +78,5 @@
     <string name="task_write_code">Написать код для получения широковещательного сообщения</string>
     <string name="_00_00">00:00</string>
     <string name="_25_00">25:00</string>
+    <string name="project_editor">Редактор проектов</string>
 </resources>
