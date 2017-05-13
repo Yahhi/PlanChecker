@@ -92,7 +92,6 @@
 
     <EditText
         android:id="@+id/task_comment_editable"
-        android:gravity="top"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
@@ -100,7 +99,10 @@
         android:layout_marginRight="8dp"
         android:layout_marginTop="0dp"
         android:ems="10"
-        android:inputType="text"
+        android:gravity="top"
+        android:imeOptions="actionDone"
+        android:inputType="text|textCapSentences"
+        android:scrollHorizontally="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

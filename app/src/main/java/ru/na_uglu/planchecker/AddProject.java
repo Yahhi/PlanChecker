@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 
 public class AddProject extends AppCompatActivity {
@@ -27,6 +29,13 @@ public class AddProject extends AppCompatActivity {
 
         projectTitle = (EditText) findViewById(R.id.project_title_editable);
         projectComment = (EditText) findViewById(R.id.project_comment_editable);
+
+        projectComment.setInputType(
+                InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+        projectComment.setSingleLine(true);
+        projectComment.setLines(6);
+        projectComment.setHorizontallyScrolling(false);
+        projectComment.setImeOptions(EditorInfo.IME_ACTION_DONE);
 
         Intent receivedData = getIntent();
         projectId = receivedData.getIntExtra("projectId", 0);

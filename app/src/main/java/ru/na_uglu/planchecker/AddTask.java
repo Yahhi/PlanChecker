@@ -8,9 +8,11 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
@@ -40,6 +42,14 @@ public class AddTask extends AppCompatActivity {
         taskTitle = (TextView) findViewById(R.id.task_title_editable);
         taskTime = (TextView) findViewById(R.id.task_time_editable);
         comment = (TextView) findViewById(R.id.task_comment_editable);
+
+        comment.setInputType(
+                InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+        comment.setSingleLine(true);
+        comment.setLines(6);
+        comment.setHorizontallyScrolling(false);
+        comment.setImeOptions(EditorInfo.IME_ACTION_DONE);
+
         projectSelection = (Spinner) findViewById(R.id.project_titles_selectable);
         String[] projectTitles = data.getProjectTitles();
         projectSelection.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, projectTitles));
