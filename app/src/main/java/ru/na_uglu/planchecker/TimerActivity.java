@@ -61,7 +61,6 @@ public class TimerActivity extends AppCompatActivity implements OnFragmentTimeAd
         TextView projectTitle = (TextView) findViewById(R.id.chronometer_project_title);
         String title = data.getProjectTitleForTask(taskId);
         projectTitle.setText(title);
-        title = task.title + " (" + title + ")";
         TextView estimatedTimeText = (TextView) findViewById(R.id.chronometer_estimated_task_time);
         estimatedTimeText.setText(Task.formatTimeInHoursAndMinutes(task.plannedTime));
         realTime = task.realTime;
@@ -71,26 +70,54 @@ public class TimerActivity extends AppCompatActivity implements OnFragmentTimeAd
         data.closeDataConnection();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_task_done);
-        final String finalTitle = title;
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LocalData data = new LocalData(getApplicationContext(), true);
-                data.makeTaskDone(taskId);
-                Task taskDone = data.getTask(taskId);
-                data.closeDataConnection();
-                setResult(Activity.RESULT_OK);
-                if (mBound) {
-                    timeService.createEventForAccuracy(new WhenhubEvent(
-                            finalTitle,
-                            LocalData.formatDate(),
-                            NetworkSync.getAccuracyRate(taskDone.realTime, taskDone.plannedTime))
-                    );
+                if (timingFragment.isTimerActive()) {
+                    DialogInterface.OnClickListener wannaStopTimer = new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which) {
+                                case DialogInterface.BUTTON_POSITIVE:
+                                    timingFragment.stopTimerAndSave();
+                                    saveDoneTask();
+                                    break;
+
+                            }
+                        }
+                    };
+                    AlertDialog.Builder wannaStopDialog = new AlertDialog.Builder(TimerActivity.this);
+                    wannaStopDialog.setTitle(R.string.back_on_timer_activity_title);
+                    wannaStopDialog.setMessage(R.string.back_on_timer_activity);
+                    wannaStopDialog.setNegativeButton(R.string.no, null);
+                    wannaStopDialog.setPositiveButton(R.string.yes, wannaStopTimer);
+                    wannaStopDialog.setCancelable(false);
+                    wannaStopDialog.show();
+                } else {
+                    saveDoneTask();
                 }
-                finish();
             }
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    private void saveDoneTask() {
+        LocalData data = new LocalData(getApplicationContext(), true);
+        data.makeTaskDone(taskId);
+        if (mBound && NetworkSync.isSyncAvailable(getBaseContext())) {
+            Task task = data.getTask(taskId);
+            String title = data.getProjectTitleForTask(taskId);
+            title = task.title + " (" + title + ")";
+            Task taskDone = data.getTask(taskId);
+            timeService.createEventForAccuracy(new WhenhubEvent(
+                    title,
+                    LocalData.formatDate(),
+                    NetworkSync.getAccuracyRate(taskDone.realTime, taskDone.plannedTime))
+            );
+        }
+        data.closeDataConnection();
+        setResult(Activity.RESULT_OK);
+        finish();
     }
 
     private void showRealTime() {
@@ -141,6 +168,7 @@ public class TimerActivity extends AppCompatActivity implements OnFragmentTimeAd
                 switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
                         timingFragment.stopTimerAndSave();
+                        setResult(Activity.RESULT_OK);
                         finish();
                         break;
 

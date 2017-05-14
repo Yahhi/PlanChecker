@@ -52,7 +52,9 @@ public class AddTask extends AppCompatActivity {
 
         projectSelection = (Spinner) findViewById(R.id.project_titles_selectable);
         String[] projectTitles = data.getProjectTitles();
-        projectSelection.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, projectTitles));
+        ArrayAdapter<String> titlesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, projectTitles);
+        titlesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        projectSelection.setAdapter(titlesAdapter);
 
         Intent comingData = getIntent();
         taskId = comingData.getIntExtra("taskId", 0);
