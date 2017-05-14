@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 
 public class PomodoroFragment extends Fragment implements timeIsGoing {
 
-    private static int TIME25MINUTES = 25 * 60;
+    private static int TIME25MINUTES = 2 * 60;
     private static int TIME5MINUTES = 5 * 60;
 
     private PomodoroStatus pomodoroStatus = PomodoroStatus.notActive;
@@ -237,9 +238,14 @@ public class PomodoroFragment extends Fragment implements timeIsGoing {
     }
 
     private void setAlarm(int timeToWaitInSeconds) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String songInPreferences = preferences.getString("notifications_ringtone", "");
+        boolean vibrationInPreferences = preferences.getBoolean("notifications_vibrate", false);
+
         AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(getActivity(), TimerEndReceiver.class);
-        intent.putExtra("vibration", false);
+        intent.putExtra("song", songInPreferences);
+        intent.putExtra("vibration", vibrationInPreferences);
         int taskId = ((OnFragmentTimeAddedListener) getActivity()).getTaskIdentifier();
         intent.putExtra("taskId", taskId);
         if (timeToWaitInSeconds == (TIME5MINUTES)) {

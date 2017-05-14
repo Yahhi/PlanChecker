@@ -26,6 +26,7 @@ public class TimerEndReceiver extends BroadcastReceiver {
 
         this.context = context;
         vibration = intent.getBooleanExtra("vibration", true);
+        song = intent.getStringExtra("song");
         inform25minutes = intent.getBooleanExtra("inform25minutes", true);
         taskId = intent.getIntExtra("taskId", 0);
         Log.i("POMODORO", "timer fired with 25minutes=" + inform25minutes);
@@ -53,8 +54,8 @@ public class TimerEndReceiver extends BroadcastReceiver {
         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
-        //Uri songId = Uri.parse(song);
-        //mBuilder.setSound(songId);
+        Uri songId = Uri.parse(song);
+        mBuilder.setSound(songId);
         mBuilder.setAutoCancel(true);
         mBuilder.setSmallIcon(R.drawable.ic_stats);
         mBuilder.setContentTitle(context.getString(R.string.notification_title));
