@@ -3,6 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/context_menu_add_task"
+        android:title="@string/add_task" />
+    <item
         android:id="@+id/context_menu_done"
         android:title="@string/done" />
     <item

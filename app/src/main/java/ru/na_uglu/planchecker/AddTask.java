@@ -65,7 +65,22 @@ public class AddTask extends AppCompatActivity {
             comment.setText(task.comment);
             projectSelection.setSelection(Arrays.asList(projectTitles).indexOf(data.getProjectTitleForTask(taskId)));
         }
+        int projectId = comingData.getIntExtra("projectId", 0);
+        if (projectId != 0) {
+            projectSelection.setSelection(getPositionFromTitle(data.getProject(projectId).title, projectTitles));
+        }
         data.closeDataConnection();
+    }
+
+    private int getPositionFromTitle(String title, String[] projectTitles) {
+        int i = 0;
+        for (String projectTitle: projectTitles) {
+            if (projectTitle.equals(title)) {
+                return i;
+            }
+            i++;
+        }
+        return 0;
     }
 
     @Override

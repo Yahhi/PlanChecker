@@ -112,10 +112,14 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.context_menu_delete:
                 askIfReallyDeleteProject(projectId);
-
                 return true;
             case R.id.context_menu_done:
                 askIfReallyMakeProjectDone(projectId);
+                return true;
+            case R.id.context_menu_add_task:
+                Intent openTaskEditor = new Intent(getApplicationContext(), AddTask.class);
+                openTaskEditor.putExtra("projectId", projectId);
+                startActivityForResult(openTaskEditor, REQUEST_TASK_EDITION);
                 return true;
             default:
                 return super.onContextItemSelected(item);
