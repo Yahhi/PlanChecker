@@ -1,13 +1,19 @@
 package ru.na_uglu.planchecker;
 
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 class Task {
     int id;
     String title;
     String comment;
     int plannedTime;
     int realTime;
-    boolean done = false;
+
+    Date whenCreated;
+    Date whenCompleted;
 
     Task() {
         id = 0;
@@ -35,13 +41,19 @@ class Task {
         return hoursString + ":" + minutesString;
     }
 
-    Task(int id, String title, String comment, int estimatedTime, int realTime, boolean done) {
+    Task(int id, String title, String comment, int estimatedTime, int realTime, String createdDate, String completedDate) {
         this.id = id;
         this.title = title;
         this.comment = comment;
         plannedTime = estimatedTime;
         this.realTime = realTime;
-        this.done = done;
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        try {
+            whenCreated = format.parse(createdDate);
+            whenCompleted = format.parse(completedDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getPlannedTime() {

@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 
 public class PomodoroFragment extends Fragment implements timeIsGoing {
 
-    private static int TIME25MINUTES = 2 * 60;
+    private static int TIME25MINUTES = 25 * 60;
     private static int TIME5MINUTES = 5 * 60;
 
     private PomodoroStatus pomodoroStatus = PomodoroStatus.notActive;
@@ -296,18 +296,13 @@ public class PomodoroFragment extends Fragment implements timeIsGoing {
     }
 
     @Override
-    public void onDestroy() {
-        stopTimerAndSave();
-        super.onDestroy();
-    }
-
-    @Override
     public boolean isTimerActive() {
         return pomodoroStatus.isTimerActive();
     }
 
     @Override
     public void stopTimerAndSave() {
+        Log.i("POMODORO", "Status changed from " + pomodoroStatus.toString());
         cancelAlarm();
         int timeInMinutes = 0;
         if (pomodoroStatus.equals(PomodoroStatus.active)) {
@@ -323,6 +318,7 @@ public class PomodoroFragment extends Fragment implements timeIsGoing {
         if (mListener != null) {
             mListener.onTimeAddedInteraction(timeInMinutes);
         }
+        Log.i("POMODORO", "to " + pomodoroStatus.toString());
         saveImportantVariables();
     }
 

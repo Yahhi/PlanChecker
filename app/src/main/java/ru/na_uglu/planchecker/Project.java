@@ -1,5 +1,9 @@
 package ru.na_uglu.planchecker;
 
+import android.app.Application;
+import android.content.Context;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -11,6 +15,7 @@ class Project {
 
     private int plannedTime;
     private int realTime;
+    private boolean done;
 
     public Project() {
         id = 0;
@@ -21,13 +26,14 @@ class Project {
         tasks = new ArrayList<>();
     }
 
-    Project(int id, String title, String comment, ArrayList<Task> tasks) {
+    Project(int id, String title, String comment, ArrayList<Task> tasks, boolean done) {
         this.id = id;
         this.title = title;
         this.comment = comment;
         this.tasks = tasks;
         plannedTime = countPlannedTime();
         realTime = countRealTime();
+        this.done = done;
     }
 
     private int countRealTime() {
@@ -46,12 +52,49 @@ class Project {
         return time;
     }
 
-
     int getPlannedTime() {
         return plannedTime;
     }
 
     int getRealTime() {
         return realTime;
+    }
+
+    String getDateStarted(Context context) {
+        String started = context.getString(R.string.still_no_tasks);
+        if (tasks.size() > 0) {
+            started = findMinimumWhenStarted();
+        }
+        return started;
+    }
+
+    private String findMinimumWhenStarted() {
+        Date minDate = new Date();
+        for (Task task: tasks) {
+            if ((task.whenCreated != null) && task.whenCreated.before(minDate)) {
+                minDate = task.whenCreated;
+            }
+        }
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+        return format.format(minDate);
+    }
+
+    String getDateCompleted(Context context) {
+        String completed = context.getString(R.string.still_no_end_date);
+        if (done) {
+            completed = findMaximumWhenCompleted();
+        }
+        return completed;
+    }
+
+    private String findMaximumWhenCompleted() {
+        Date maxDate = new Date(0);
+        for (Task task: tasks) {
+            if (task.whenCompleted.after(maxDate)) {
+                maxDate = task.whenCompleted;
+            }
+        }
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+        return format.format(maxDate);
     }
 }

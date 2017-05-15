@@ -11,6 +11,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 class LocalData {
     private SQLiteDatabase db;
@@ -41,6 +42,7 @@ class LocalData {
         int id = cursor.getInt(cursor.getColumnIndex("id"));
         String title = cursor.getString(cursor.getColumnIndex("title"));
         String comment = cursor.getString(cursor.getColumnIndex("comment"));
+        Boolean done = cursor.getInt(cursor.getColumnIndex("done")) > 0;
 
         Cursor tasksCursor = db.rawQuery("SELECT * FROM tasks WHERE done = 0 AND project_id = ?", new String[]{Integer.toString(id)});
         tasksCursor.moveToFirst();
@@ -51,7 +53,7 @@ class LocalData {
         }
         tasksCursor.close();
 
-        return new Project(id, title, comment, tasks);
+        return new Project(id, title, comment, tasks, done);
     }
 
     private Task getTaskFromCursor(Cursor cursor) {
@@ -59,9 +61,10 @@ class LocalData {
         String taskTitle = cursor.getString(cursor.getColumnIndex("title"));
         int taskEstimatedTime = cursor.getInt(cursor.getColumnIndex("estimated_time"));
         int taskRealTime = cursor.getInt(cursor.getColumnIndex("real_time"));
-        boolean taskDone = cursor.getInt(cursor.getColumnIndex("done")) > 0;
+        String taskCreated = cursor.getString(cursor.getColumnIndex("when_created"));
+        String taskDone = cursor.getString(cursor.getColumnIndex("when_done"));
         String comment = cursor.getString(cursor.getColumnIndex("comment"));
-        return new Task(taskId, taskTitle, comment, taskEstimatedTime, taskRealTime, taskDone);
+        return new Task(taskId, taskTitle, comment, taskEstimatedTime, taskRealTime, taskCreated, taskDone);
     }
 
     void saveProject(int id, String title, String comment) {
@@ -308,5 +311,23 @@ class LocalData {
         }
         cursor.close();
         return accuracyResults;
+    }
+
+    ArrayList<Task> getDoneTasksForProject(int projectId) {
+        Cursor cursor = db.rawQuery("SELECT * FROM tasks WHERE done > 0 AND project_id = ?",
+                new String[]{Integer.toString(projectId)});
+        cursor.moveToFirst();
+        ArrayList<Task> tasks = new ArrayList<>(cursor.getCount());
+        while (!cursor.isAfterLast()) {
+            tasks.add(getTaskFromCursor(cursor));
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return tasks;
+    }
+
+    int getAverageTime(int projectId) {
+
+        return 0;
     }
 }

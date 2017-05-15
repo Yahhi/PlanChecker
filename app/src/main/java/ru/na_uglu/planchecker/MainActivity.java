@@ -121,6 +121,10 @@ public class MainActivity extends AppCompatActivity {
                 openTaskEditor.putExtra("projectId", projectId);
                 startActivityForResult(openTaskEditor, REQUEST_TASK_EDITION);
                 return true;
+            case R.id.context_menu_info:
+                Intent openProjectInfo = new Intent(getApplicationContext(), ProjectView.class);
+                openProjectInfo.putExtra("projectId", projectId);
+                startActivityForResult(openProjectInfo, REQUEST_PROJECT_EDITION);
             default:
                 return super.onContextItemSelected(item);
         }

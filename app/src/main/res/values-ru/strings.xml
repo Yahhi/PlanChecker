@@ -79,4 +79,16 @@
     <string name="_00_00">00:00</string>
     <string name="_25_00">25:00</string>
     <string name="project_editor">Редактор проектов</string>
+    <string name="context_menu_info">Информация</string>
+    <string name="title_activity_project_view">Проект</string>
+    <string name="time_info_project">Инфо</string>
+    <string name="done_info_project">Завершены</string>
+    <string name="active_info_project">Активны</string>
+    <string name="average_time_in_working_days">Среднее время работы за день:</string>
+    <string name="_0000_00_00_00_00">0000-00-00 00:00</string>
+    <string name="project_completed">Проект завершен:</string>
+    <string name="project_started">Проект начат:</string>
+    <string name="working_time">Время работы над проектом:</string>
+    <string name="still_no_tasks">...В проекте еще нет задач. Вы еще не начали работу над ним...</string>
+    <string name="still_no_end_date">...проект еще не завершен...</string>
 </resources>
