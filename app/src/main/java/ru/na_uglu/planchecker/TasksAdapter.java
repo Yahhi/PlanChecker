@@ -9,12 +9,12 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-class DoneTasksAdapter extends BaseAdapter {
+class TasksAdapter extends BaseAdapter {
 
     private final ArrayList<Task> tasks;
     Context context;
 
-    DoneTasksAdapter(Context context, ArrayList<Task> items) {
+    TasksAdapter(Context context, ArrayList<Task> items) {
         tasks = items;
         this.context = context;
     }

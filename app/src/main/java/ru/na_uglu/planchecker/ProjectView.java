@@ -12,13 +12,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-
-import android.widget.TextView;
 
 public class ProjectView extends AppCompatActivity {
 
@@ -69,6 +65,10 @@ public class ProjectView extends AppCompatActivity {
 
         Intent receivedData = getIntent();
         projectId = receivedData.getIntExtra("projectId", 1);
+
+        LocalData data = new LocalData(this, false);
+        this.setTitle(data.getProject(projectId).title);
+        data.closeDataConnection();
     }
 
 
@@ -98,7 +98,7 @@ public class ProjectView extends AppCompatActivity {
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
-    class SectionsPagerAdapter extends FragmentPagerAdapter {
+    private class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -110,9 +110,9 @@ public class ProjectView extends AppCompatActivity {
                 case 0:
                     return FragmentProjectInfo.newInstance(projectId);
                 case 1:
-                    return FragmentDoneTasks.newInstance(projectId);
+                    return FragmentTasks.newInstance(projectId, true);
                 case 2:
-                    return FragmentDoneTasks.newInstance(projectId);
+                    return FragmentTasks.newInstance(projectId, false);
                 default:
                     return null;
             }

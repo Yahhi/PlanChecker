@@ -2,16 +2,13 @@ package ru.na_uglu.planchecker;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 class LocalData {
     private SQLiteDatabase db;
@@ -313,9 +310,15 @@ class LocalData {
         return accuracyResults;
     }
 
-    ArrayList<Task> getDoneTasksForProject(int projectId) {
-        Cursor cursor = db.rawQuery("SELECT * FROM tasks WHERE done > 0 AND project_id = ?",
-                new String[]{Integer.toString(projectId)});
+    ArrayList<Task> getTasksForProject(int projectId, boolean done) {
+        Cursor cursor;
+        if (done) {
+            cursor = db.rawQuery("SELECT * FROM tasks WHERE done > 0 AND project_id = ?",
+                    new String[]{Integer.toString(projectId)});
+        } else {
+            cursor = db.rawQuery("SELECT * FROM tasks WHERE done = 0 AND project_id = ?",
+                    new String[]{Integer.toString(projectId)});
+        }
         cursor.moveToFirst();
         ArrayList<Task> tasks = new ArrayList<>(cursor.getCount());
         while (!cursor.isAfterLast()) {
@@ -327,7 +330,43 @@ class LocalData {
     }
 
     int getAverageTime(int projectId) {
-
+        Cursor cursor = db.rawQuery(
+                "SELECT time, when_added FROM time_intervals WHERE task_id IN (SELECT id FROM tasks WHERE project_id = ?) ORDER BY when_added ASC",
+                new String[]{Integer.toString(projectId)});
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            int averageTime = 0;
+            int[] timeInDay = getTimeSumsForDay(cursor);
+            for (int aTimeInDay : timeInDay) {
+                averageTime += aTimeInDay;
+            }
+            cursor.close();
+            return averageTime / timeInDay.length;
+        }
+        cursor.close();
         return 0;
+    }
+
+    private int[] getTimeSumsForDay(Cursor cursor) {
+        int[] sums = new int[cursor.getCount()];
+        String date = cursor.getString(cursor.getColumnIndex("when_added")).substring(0, 10);
+        int i = 0;
+        while (!cursor.isAfterLast()) {
+            String newDate = cursor.getString(cursor.getColumnIndex("when_added")).substring(0, 10);
+            int time = cursor.getInt(cursor.getColumnIndex("time"));
+            if (date.equals(newDate)) {
+                sums[i] += time;
+            } else {
+                date = newDate;
+                i++;
+                sums[i] = time;
+            }
+            cursor.moveToNext();
+        }
+        int[] finalSums = new int[i];
+        for (int j = 0; j < i; j++) {
+            finalSums[j] = sums[j];
+        }
+        return finalSums;
     }
 }

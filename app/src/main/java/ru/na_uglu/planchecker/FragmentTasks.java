@@ -3,27 +3,24 @@ package ru.na_uglu.planchecker;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import java.util.List;
-
-public class FragmentDoneTasks extends Fragment {
+public class FragmentTasks extends Fragment {
 
     int projectId;
+    boolean done;
 
-    public FragmentDoneTasks() {
+    public FragmentTasks() {
     }
 
-    public static FragmentDoneTasks newInstance(int projectId) {
-        FragmentDoneTasks fragment = new FragmentDoneTasks();
+    public static FragmentTasks newInstance(int projectId, boolean doneTasks) {
+        FragmentTasks fragment = new FragmentTasks();
         Bundle args = new Bundle();
         args.putInt("projectId", projectId);
+        args.putBoolean("doneTasks", doneTasks);
         fragment.setArguments(args);
         return fragment;
     }
@@ -33,6 +30,7 @@ public class FragmentDoneTasks extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             projectId = getArguments().getInt("projectId");
+            done = getArguments().getBoolean("doneTasks");
         } else {
             projectId = 0;
         }
@@ -46,7 +44,7 @@ public class FragmentDoneTasks extends Fragment {
         ListView doneTasksList = (ListView) view.findViewById(R.id.list_done_tasks);
         Context context = view.getContext();
         LocalData data = new LocalData(context, false);
-        doneTasksList.setAdapter(new DoneTasksAdapter(context, data.getDoneTasksForProject(projectId)));
+        doneTasksList.setAdapter(new TasksAdapter(context, data.getTasksForProject(projectId, done)));
         data.closeDataConnection();
 
         return view;
