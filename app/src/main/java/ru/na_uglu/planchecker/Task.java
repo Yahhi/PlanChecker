@@ -50,7 +50,11 @@ class Task {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         try {
             whenCreated = format.parse(createdDate);
-            whenCompleted = format.parse(completedDate);
+            if (completedDate.length() > 0) {
+                whenCompleted = format.parse(completedDate);
+            } else {
+                whenCompleted = new Date(0);
+            }
         } catch (ParseException e) {
             e.printStackTrace();
         }

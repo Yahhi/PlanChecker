@@ -1,9 +1,12 @@
 package ru.na_uglu.planchecker;
 
+import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -18,6 +21,10 @@ import android.view.View;
 
 public class ProjectView extends AppCompatActivity {
 
+    static final int REQUEST_PROJECT_EDITION = 565;
+    static final int REQUEST_TIME_EDITION = 566;
+
+    FragmentProjectInfo infoFragment;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -40,6 +47,9 @@ public class ProjectView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project_view);
 
+        Intent receivedData = getIntent();
+        projectId = receivedData.getIntExtra("projectId", 1);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -53,18 +63,6 @@ public class ProjectView extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
-        Intent receivedData = getIntent();
-        projectId = receivedData.getIntExtra("projectId", 1);
 
         LocalData data = new LocalData(this, false);
         this.setTitle(data.getProject(projectId).title);
@@ -87,11 +85,82 @@ public class ProjectView extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.menu_edit:
+                Intent intent = new Intent(getBaseContext(), AddProject.class);
+                intent.putExtra("projectId", projectId);
+                startActivityForResult(intent, REQUEST_PROJECT_EDITION);
+                return true;
+            case R.id.menu_delete:
+                askIfReallyDeleteProject(projectId);
+                return true;
+            case R.id.menu_done:
+                askIfReallyMakeProjectDone(projectId);
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    protected void askIfReallyDoSomething(String dialogTitle, String dialogMessage, DialogInterface.OnClickListener listener) {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle(dialogTitle);
+        dialog.setMessage(dialogMessage);
+        dialog.setNegativeButton(R.string.no, null);
+        dialog.setPositiveButton(R.string.yes, listener);
+        dialog.setCancelable(false);
+        dialog.show();
+    }
+
+    private void askIfReallyDeleteProject(final int projectId) {
+        DialogInterface.OnClickListener wannaDelete = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        LocalData data = new LocalData(getBaseContext(), true);
+                        data.deleteProject(projectId);
+                        data.closeDataConnection();
+
+                        setResult(RESULT_OK);
+                        finish();
+                        break;
+
+                }
+            }
+        };
+        LocalData data = new LocalData(getBaseContext(), false);
+        askIfReallyDoSomething(
+                data.getProject(projectId).title,
+                getString(R.string.delete_project_dialog),
+                wannaDelete);
+        data.closeDataConnection();
+    }
+
+    private void askIfReallyMakeProjectDone(final int projectId) {
+        DialogInterface.OnClickListener wannaMakeProjectDone = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        LocalData data = new LocalData(getBaseContext(), true);
+                        data.makeProjectDone(projectId);
+                        data.closeDataConnection();
+
+                        setResult(RESULT_OK);
+                        infoFragment.fillViewFromDatabase();
+                        break;
+
+                }
+            }
+        };
+        LocalData data = new LocalData(getBaseContext(), false);
+        askIfReallyDoSomething(
+                data.getProject(projectId).title,
+                getString(R.string.make_project_done_dialog),
+                wannaMakeProjectDone);
+        data.closeDataConnection();
     }
 
     /**
@@ -102,13 +171,14 @@ public class ProjectView extends AppCompatActivity {
 
         SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
+            infoFragment = FragmentProjectInfo.newInstance(projectId);
         }
 
         @Override
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return FragmentProjectInfo.newInstance(projectId);
+                    return infoFragment;
                 case 1:
                     return FragmentTasks.newInstance(projectId, true);
                 case 2:

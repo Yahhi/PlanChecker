@@ -1,15 +1,18 @@
 package ru.na_uglu.planchecker;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 public class FragmentTasks extends Fragment {
 
+    private static final int REQUEST_TIME_VIEW = 568;
     int projectId;
     boolean done;
 
@@ -44,7 +47,19 @@ public class FragmentTasks extends Fragment {
         ListView doneTasksList = (ListView) view.findViewById(R.id.list_done_tasks);
         Context context = view.getContext();
         LocalData data = new LocalData(context, false);
-        doneTasksList.setAdapter(new TasksAdapter(context, data.getTasksForProject(projectId, done)));
+        final TasksAdapter adapter = new TasksAdapter(context, data.getTasksForProject(projectId, done));
+        doneTasksList.setAdapter(adapter);
+        doneTasksList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Task clickedTask = (Task) adapter.getItem(position);
+                if (clickedTask.realTime > 0) {
+                    Intent intent = new Intent(getContext(), InfoTaskActivity.class);
+                    intent.putExtra("taskId", (int) id);
+                    startActivityForResult(intent, REQUEST_TIME_VIEW);
+                }
+            }
+        });
         data.closeDataConnection();
 
         return view;

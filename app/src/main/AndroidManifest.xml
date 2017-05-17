@@ -26,7 +26,7 @@
         <activity
             android:name=".AddProject"
             android:label="@string/project_editor"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".ProjectView"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -95,6 +95,15 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ru.na_uglu.planchecker.MainActivity" />
+        </activity>
+        <activity
+            android:name=".InfoTaskActivity"
+            android:label="@string/title_activity_info_task"
+            android:parentActivityName=".InfoActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ru.na_uglu.planchecker.InfoActivity" />
         </activity>
     </application>
 

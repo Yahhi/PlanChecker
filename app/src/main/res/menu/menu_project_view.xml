@@ -3,8 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="ru.na_uglu.planchecker.ProjectView">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/menu_edit"
+        android:icon="@drawable/ic_edit_white_24dp"
+        android:title="@string/edit"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/menu_done"
+        android:icon="@drawable/ic_done_white_24dp"
+        android:title="@string/done"
+        android:orderInCategory="101"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/menu_delete"
+        android:icon="@drawable/ic_delete_white_24dp"
+        android:title="@string/delete"
+        android:orderInCategory="102"
+        app:showAsAction="ifRoom" />
 </menu>

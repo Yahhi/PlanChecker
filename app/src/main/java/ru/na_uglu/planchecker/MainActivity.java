@@ -105,17 +105,6 @@ public class MainActivity extends AppCompatActivity {
                 (ExpandableListView.ExpandableListContextMenuInfo) item.getMenuInfo();
         int projectId = (int) info.id;
         switch (item.getItemId()) {
-            case R.id.context_menu_edit:
-                Intent intent = new Intent(getBaseContext(), AddProject.class);
-                intent.putExtra("projectId", projectId);
-                startActivityForResult(intent, REQUEST_PROJECT_EDITION);
-                return true;
-            case R.id.context_menu_delete:
-                askIfReallyDeleteProject(projectId);
-                return true;
-            case R.id.context_menu_done:
-                askIfReallyMakeProjectDone(projectId);
-                return true;
             case R.id.context_menu_add_task:
                 Intent openTaskEditor = new Intent(getApplicationContext(), AddTask.class);
                 openTaskEditor.putExtra("projectId", projectId);

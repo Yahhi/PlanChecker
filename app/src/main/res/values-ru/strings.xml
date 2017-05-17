@@ -88,7 +88,12 @@
     <string name="_0000_00_00_00_00">0000-00-00 00:00</string>
     <string name="project_completed">Проект завершен:</string>
     <string name="project_started">Проект начат:</string>
-    <string name="working_time">Время работы над проектом:</string>
+    <string name="working_time">Время работы:</string>
     <string name="still_no_tasks">...В проекте еще нет задач. Вы еще не начали работу над ним...</string>
     <string name="still_no_end_date">...проект еще не завершен...</string>
+    <string name="minutes"> минут</string>
+    <string name="divider_time_value"><![CDATA[>]]></string>
+    <string name="_0000_00_00">0000-00-00</string>
+    <string name="title_activity_info_task">Время работы</string>
+    <string name="delete_time">Вы действительно хотите удалить этот временной интервал?</string>
 </resources>

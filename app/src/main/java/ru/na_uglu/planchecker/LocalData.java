@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -194,6 +195,34 @@ class LocalData {
         return times;
     }
 
+    ArrayList<TimeInterval> getTimeIntervalsForTask(int taskId) {
+        Cursor cursor = db.rawQuery("SELECT * FROM time_intervals WHERE task_id = ?",
+                new String[]{Integer.toString(taskId)});
+        ArrayList<TimeInterval> times = new ArrayList<>(cursor.getCount());
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            int id = cursor.getInt(cursor.getColumnIndex("id"));
+            int time = cursor.getInt(cursor.getColumnIndex("time"));
+            String whenAdded = cursor.getString(cursor.getColumnIndex("when_added"));
+            times.add(new TimeInterval(id, getDateFromString(whenAdded), time));
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return times;
+    }
+
+    private Date getDateFromString(String whenAdded) {
+        Date date = new Date();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        try {
+            date = format.parse(whenAdded);
+            System.out.println(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
+
     void saveTask(int taskId, int projectId, String title, int estimatedTime, String comment) {
         ContentValues values = new ContentValues();
         values.put("project_id", projectId);
@@ -283,6 +312,7 @@ class LocalData {
     void makeProjectDone(int projectId) {
         ContentValues values = new ContentValues();
         values.put("done", 1);
+
         db.update("projects", values, "id = ?", new String[]{Integer.toString(projectId)});
     }
 
@@ -368,5 +398,9 @@ class LocalData {
             finalSums[j] = sums[j];
         }
         return finalSums;
+    }
+
+    void deleteTimeInterval(int id) {
+        db.delete("time_intervals", "id = ?", new String[]{Integer.toString(id)});
     }
 }

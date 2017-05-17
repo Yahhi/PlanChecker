@@ -142,4 +142,9 @@
     <string name="working_time">Working time:</string>
     <string name="still_no_tasks">...no tasks in project. You still didn\'t started it...</string>
     <string name="still_no_end_date">...still working...</string>
+    <string name="title_activity_info_task">Working time</string>
+    <string name="_0000_00_00">0000-00-00</string>
+    <string name="minutes">minutes</string>
+    <string name="divider_time_value"><![CDATA[>]]></string>
+    <string name="delete_time">Do you really want to delete this time interval?</string>
 </resources>
