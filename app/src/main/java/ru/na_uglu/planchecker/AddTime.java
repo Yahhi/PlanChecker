@@ -49,13 +49,17 @@ public class AddTime extends AppCompatActivity {
         LocalData data = new LocalData(this, false);
         String[] projectTitles = data.getProjectTitles();
         data.closeDataConnection();
-        projectSelection.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, projectTitles));
+        ArrayAdapter projectAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, projectTitles);
+        projectAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        projectSelection.setAdapter(projectAdapter);
         projectSelection.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 LocalData localData = new LocalData(getBaseContext(), false);
                 String[] taskTitles = localData.getTaskTitles(parent.getItemAtPosition(position).toString());
-                taskSelection.setAdapter(new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, taskTitles));
+                ArrayAdapter taskAdapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, taskTitles);
+                taskAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+                taskSelection.setAdapter(taskAdapter);
                 localData.closeDataConnection();
             }
 

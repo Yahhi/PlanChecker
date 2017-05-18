@@ -62,7 +62,7 @@ public class FragmentProjectInfo extends Fragment {
         Context context = getContext();
 
         LocalData data = new LocalData(context, false);
-        Project myProject = data.getProject(projectId);
+        Project myProject = data.getProject(projectId, true);
         projectStarted.setText(myProject.getDateStarted(getContext()));
         projectCompleted.setText(myProject.getDateCompleted(getContext()));
         projectRealTime.setText(Task.formatTimeInHoursAndMinutes(myProject.getRealTime()));

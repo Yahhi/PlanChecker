@@ -29,20 +29,25 @@ class LocalData {
         Cursor cursor = db.rawQuery("SELECT * FROM projects WHERE done = 0", null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            projects.add(getProjectFromCursor(cursor));
+            projects.add(getProjectFromCursor(cursor, false));
             cursor.moveToNext();
         }
         cursor.close();
         return projects;
     }
 
-    private Project getProjectFromCursor(Cursor cursor) {
+    private Project getProjectFromCursor(Cursor cursor, boolean withDoneTasks) {
         int id = cursor.getInt(cursor.getColumnIndex("id"));
         String title = cursor.getString(cursor.getColumnIndex("title"));
         String comment = cursor.getString(cursor.getColumnIndex("comment"));
         Boolean done = cursor.getInt(cursor.getColumnIndex("done")) > 0;
 
-        Cursor tasksCursor = db.rawQuery("SELECT * FROM tasks WHERE done = 0 AND project_id = ?", new String[]{Integer.toString(id)});
+        Cursor tasksCursor;
+        if (!withDoneTasks) {
+            tasksCursor = db.rawQuery("SELECT * FROM tasks WHERE done = 0 AND project_id = ?", new String[]{Integer.toString(id)});
+        } else {
+            tasksCursor = db.rawQuery("SELECT * FROM tasks WHERE project_id = ?", new String[]{Integer.toString(id)});
+        }
         tasksCursor.moveToFirst();
         ArrayList<Task> tasks = new ArrayList<>();
         while (!tasksCursor.isAfterLast()) {
@@ -77,10 +82,14 @@ class LocalData {
     }
 
     Project getProject(int projectId) {
+        return getProject(projectId, true);
+    }
+
+    Project getProject(int projectId, boolean withDoneTasks) {
         Cursor projectCursor = db.rawQuery("SELECT * FROM projects WHERE id = ?",
                 new String[]{Integer.toString(projectId)});
         projectCursor.moveToFirst();
-        Project project = getProjectFromCursor(projectCursor);
+        Project project = getProjectFromCursor(projectCursor, withDoneTasks);
         projectCursor.close();
         return project;
     }
@@ -403,4 +412,5 @@ class LocalData {
     void deleteTimeInterval(int id) {
         db.delete("time_intervals", "id = ?", new String[]{Integer.toString(id)});
     }
+
 }
