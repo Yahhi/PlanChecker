@@ -147,4 +147,6 @@
     <string name="minutes">minutes</string>
     <string name="divider_time_value"><![CDATA[>]]></string>
     <string name="delete_time">Do you really want to delete this time interval?</string>
+    <string name="title_activity_working_time_chart">Chart</string>
+    <string name="local_chart">Local chart</string>
 </resources>

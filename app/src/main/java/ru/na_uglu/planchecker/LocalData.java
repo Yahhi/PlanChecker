@@ -5,11 +5,17 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import static ru.na_uglu.planchecker.R.id.time;
 
 class LocalData {
     private SQLiteDatabase db;
@@ -413,4 +419,24 @@ class LocalData {
         db.delete("time_intervals", "id = ?", new String[]{Integer.toString(id)});
     }
 
+    ArrayList<TimeInterval> getTimeIntervals() {
+        Cursor cursor = db.rawQuery("SELECT * FROM time_intervals ORDER BY when_added", null);
+        cursor.moveToFirst();
+        ArrayList<TimeInterval> allTimes = getTimeIntervalsFromCursor(cursor);
+        cursor.close();
+        return allTimes;
+    }
+
+    private ArrayList<TimeInterval> getTimeIntervalsFromCursor(Cursor cursor) {
+        ArrayList<TimeInterval> timeIntervals = new ArrayList<>(cursor.getCount());
+        while (!cursor.isAfterLast()) {
+            int id = cursor.getInt(cursor.getColumnIndex("id"));
+            int taskId = cursor.getInt(cursor.getColumnIndex("task_id"));
+            int time = cursor.getInt(cursor.getColumnIndex("time"));
+            String whenAdded = cursor.getString(cursor.getColumnIndex("when_added"));
+            timeIntervals.add(new TimeInterval(id, taskId, getDateFromString(whenAdded), time));
+            cursor.moveToNext();
+        }
+        return timeIntervals;
+    }
 }

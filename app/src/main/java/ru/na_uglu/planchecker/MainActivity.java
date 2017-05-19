@@ -198,6 +198,9 @@ public class MainActivity extends AppCompatActivity {
             openWhenhub("planning accuracy");
         } else if (id == R.id.whenhub_calendar) {
             openWhenhub("working resume");
+        } else if (id == R.id.local_chart) {
+            Intent localChart = new Intent(this, WorkingTimeChart.class);
+            startActivity(localChart);
         }
 
         return super.onOptionsItemSelected(item);

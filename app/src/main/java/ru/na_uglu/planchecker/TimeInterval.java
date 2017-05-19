@@ -9,12 +9,19 @@ class TimeInterval {
     int id;
     Date whenHappened;
     int time;
-    private String timeWhenHappened;
+    int taskId = 0;
 
     TimeInterval(int id, Date whenHappened, int time) {
         this.id = id;
         this.whenHappened = whenHappened;
         this.time = time;
+    }
+
+    TimeInterval(int id, int taskId, Date whenHappened, int time) {
+        this.id = id;
+        this.whenHappened = whenHappened;
+        this.time = time;
+        this.taskId = taskId;
     }
 
     String getDateWhenHappened() {

@@ -3,17 +3,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="ru.na_uglu.planchecker.MainActivity">
     <item
+        android:id="@+id/local_chart"
+        android:icon="@drawable/ic_stats"
+        android:orderInCategory="99"
+        android:title="@string/local_chart"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/whenhub_accuracy"
         android:icon="@drawable/ic_graph_line_screen"
         android:orderInCategory="100"
         android:title="@string/graph"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/whenhub_calendar"
         android:icon="@drawable/ic_calendar_timer"
         android:orderInCategory="101"
         android:title="@string/work_graph"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/info_menu_item"
         android:icon="@drawable/ic_info_white_24dp"
