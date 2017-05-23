@@ -9,27 +9,33 @@
         android:title="@string/local_chart"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/authentication"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_login_password"
+        android:title="@string/log_in"
+        app:showAsAction="withText"/>
+    <item
         android:id="@+id/whenhub_accuracy"
         android:icon="@drawable/ic_graph_line_screen"
-        android:orderInCategory="100"
+        android:orderInCategory="101"
         android:title="@string/graph"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/whenhub_calendar"
         android:icon="@drawable/ic_calendar_timer"
-        android:orderInCategory="101"
+        android:orderInCategory="102"
         android:title="@string/work_graph"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/info_menu_item"
         android:icon="@drawable/ic_info_white_24dp"
-        android:orderInCategory="102"
+        android:orderInCategory="103"
         android:title="@string/info"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_settings"
         android:icon="@drawable/ic_settings_white_24dp"
-        android:orderInCategory="103"
+        android:orderInCategory="104"
         android:title="@string/action_settings"
         app:showAsAction="ifRoom" />
 </menu>

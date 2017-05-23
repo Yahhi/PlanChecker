@@ -9,30 +9,34 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ExpandableListView;
+import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     static final int REQUEST_PROJECT_EDITION = 399;
     static final int REQUEST_TASK_EDITION = 398;
+    private static final int REQUEST_LOGIN = 397;
 
     boolean neededAccessToken;
 
     boolean mBound;
     NetworkSync timeService;
+
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        mAuth = FirebaseAuth.getInstance();
 
         if (NetworkSync.isSyncAvailable(getBaseContext())) {
             startService(new Intent(this, NetworkSync.class));
@@ -201,6 +207,9 @@ public class MainActivity extends AppCompatActivity {
         } else if (id == R.id.local_chart) {
             Intent localChart = new Intent(this, WorkingTimeChart.class);
             startActivity(localChart);
+        } else if (id == R.id.authentication) {
+            Intent signInIntent = new Intent(this, LoginActivity.class);
+            startActivityForResult(signInIntent, REQUEST_LOGIN);
         }
 
         return super.onOptionsItemSelected(item);
@@ -264,7 +273,18 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 fillTaskList();
             }
+        } else if (requestCode == REQUEST_LOGIN) {
+            if (resultCode == RESULT_OK) {
+                Toast toast = Toast.makeText(this, "Login successful", Toast.LENGTH_LONG);
+                toast.show();
+                askForFullSync();
+
+            }
         }
+    }
+
+    private void askForFullSync() {
+        //TODO start syncing
     }
 
     @Override
@@ -272,6 +292,16 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         Intent intent = new Intent(this, NetworkSync.class);
         bindService(intent, networkConnection, BIND_AUTO_CREATE);
+
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            Toast toast = Toast.makeText(this, currentUser.getUid(), Toast.LENGTH_LONG);
+            toast.show();
+        } else {
+            Toast toast = Toast.makeText(this, "null user", Toast.LENGTH_LONG);
+            toast.show();
+        }
+
     }
 
     SharedPreferences.OnSharedPreferenceChangeListener accessTokenListener = new SharedPreferences.OnSharedPreferenceChangeListener() {

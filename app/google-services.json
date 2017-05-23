@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1026863904532",
+    "firebase_url": "https://planchecker-de5c5.firebaseio.com",
+    "project_id": "planchecker-de5c5",
+    "storage_bucket": "planchecker-de5c5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1026863904532:android:a38e67022a7fdd9a",
+        "android_client_info": {
+          "package_name": "ru.na_uglu.planchecker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1026863904532-m2sb30r8371qj2k5ugt8i6arlrp9cgo5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ru.na_uglu.planchecker",
+            "certificate_hash": "8cca6871ae17dc89a094874e379aad90755d5c6c"
+          }
+        },
+        {
+          "client_id": "1026863904532-4ujli1gi8o9gem0ebjtbmnuosssgadku.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1qZs7MI2Rk5dyJWnXfrY8aUk6v24I_Lo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1026863904532-4ujli1gi8o9gem0ebjtbmnuosssgadku.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
