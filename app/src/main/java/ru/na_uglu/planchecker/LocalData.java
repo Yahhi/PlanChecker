@@ -80,6 +80,7 @@ class LocalData {
         ContentValues values = new ContentValues();
         values.put("title", title);
         values.put("comment", comment);
+        values.put("last_modified", LocalData.formatDate());
         if (id == 0) {
             db.insert("projects", "", values);
         } else {
@@ -141,6 +142,7 @@ class LocalData {
         ContentValues values = new ContentValues();
         values.put("done", 1);
         values.put("when_done", formatDate());
+        values.put("last_modified", LocalData.formatDate());
         db.update("tasks", values, "id = ?", new String[]{Integer.toString(taskId)});
     }
 
@@ -159,6 +161,7 @@ class LocalData {
             currentTimeCursor.close();
             ContentValues updatedTimeValues = new ContentValues();
             updatedTimeValues.put("real_time", curentTaskTime + time);
+            updatedTimeValues.put("last_modified", LocalData.formatDate());
             db.update("tasks", updatedTimeValues, "id = ?", new String[]{Integer.toString(taskId)});
         }
     }
@@ -169,7 +172,16 @@ class LocalData {
     }
 
     static String formatDate() {
-        Date date = new Date();
+        return formatDate(0);
+    }
+
+    static String formatDate(long dateLong) {
+        Date date;
+        if (dateLong == 0) {
+            date = new Date();
+        } else {
+            date = new Date(dateLong);
+        }
         SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat format2 = new SimpleDateFormat("hh:mm:ss");
         String formatResult = format1.format(date) + "T" + format2.format(date) + "Z";
@@ -177,7 +189,7 @@ class LocalData {
     }
 
     int[] getFiveLastTimeIntervals(int taskId) {
-        Cursor cursor = db.rawQuery("SELECT * FROM time_intervals WHERE task_id = ? ORDER BY id DESC",
+        Cursor cursor = db.rawQuery("SELECT * FROM time_intervals WHERE task_id = ? ORDER BY when_added DESC",
                 new String[]{Integer.toString(taskId)});
         cursor.moveToFirst();
         int[] intervals = new int[cursor.getCount()];
@@ -191,7 +203,7 @@ class LocalData {
     }
 
     WhenhubEvent[] getAllTimeIntervals() {
-        Cursor cursor = db.rawQuery("SELECT * FROM time_intervals ORDER BY id ASC", null);
+        Cursor cursor = db.rawQuery("SELECT * FROM time_intervals ORDER BY when_added ASC", null);
         WhenhubEvent[] times = new WhenhubEvent[cursor.getCount()];
         int i = 0;
         cursor.moveToFirst();
@@ -216,10 +228,9 @@ class LocalData {
         ArrayList<TimeInterval> times = new ArrayList<>(cursor.getCount());
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            int id = cursor.getInt(cursor.getColumnIndex("id"));
             int time = cursor.getInt(cursor.getColumnIndex("time"));
             String whenAdded = cursor.getString(cursor.getColumnIndex("when_added"));
-            times.add(new TimeInterval(id, getDateFromString(whenAdded), time));
+            times.add(new TimeInterval(taskId, getDateFromString(whenAdded), time));
             cursor.moveToNext();
         }
         cursor.close();
@@ -244,6 +255,7 @@ class LocalData {
         values.put("title", title);
         values.put("estimated_time", estimatedTime);
         values.put("comment", comment);
+        values.put("last_modified", LocalData.formatDate());
         if (taskId == 0) {
             values.put("when_created", formatDate());
             db.insert("tasks", "", values);
@@ -327,7 +339,7 @@ class LocalData {
     void makeProjectDone(int projectId) {
         ContentValues values = new ContentValues();
         values.put("done", 1);
-
+        values.put("last_modified", LocalData.formatDate());
         db.update("projects", values, "id = ?", new String[]{Integer.toString(projectId)});
     }
 
@@ -415,8 +427,8 @@ class LocalData {
         return finalSums;
     }
 
-    void deleteTimeInterval(int id) {
-        db.delete("time_intervals", "id = ?", new String[]{Integer.toString(id)});
+    void deleteTimeInterval(long id) {
+        db.delete("time_intervals", "when_added = ?", new String[]{LocalData.formatDate(id)});
     }
 
     ArrayList<TimeInterval> getTimeIntervals() {
@@ -430,11 +442,10 @@ class LocalData {
     private ArrayList<TimeInterval> getTimeIntervalsFromCursor(Cursor cursor) {
         ArrayList<TimeInterval> timeIntervals = new ArrayList<>(cursor.getCount());
         while (!cursor.isAfterLast()) {
-            int id = cursor.getInt(cursor.getColumnIndex("id"));
             int taskId = cursor.getInt(cursor.getColumnIndex("task_id"));
             int time = cursor.getInt(cursor.getColumnIndex("time"));
             String whenAdded = cursor.getString(cursor.getColumnIndex("when_added"));
-            timeIntervals.add(new TimeInterval(id, taskId, getDateFromString(whenAdded), time));
+            timeIntervals.add(new TimeInterval(taskId, getDateFromString(whenAdded), time));
             cursor.moveToNext();
         }
         return timeIntervals;

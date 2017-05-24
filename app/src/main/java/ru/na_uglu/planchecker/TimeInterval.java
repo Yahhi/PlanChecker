@@ -6,19 +6,19 @@ import java.util.Calendar;
 import java.util.Date;
 
 class TimeInterval {
-    int id;
+    long id;
     Date whenHappened;
     int time;
     int taskId = 0;
 
-    TimeInterval(int id, Date whenHappened, int time) {
-        this.id = id;
+    TimeInterval(Date whenHappened, int time) {
+        this.id = whenHappened.getTime();
         this.whenHappened = whenHappened;
         this.time = time;
     }
 
-    TimeInterval(int id, int taskId, Date whenHappened, int time) {
-        this.id = id;
+    TimeInterval(int taskId, Date whenHappened, int time) {
+        this.id = whenHappened.getTime();
         this.whenHappened = whenHappened;
         this.time = time;
         this.taskId = taskId;
