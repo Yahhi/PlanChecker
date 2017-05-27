@@ -25,7 +25,7 @@ public class TimerActivity extends AppCompatActivity implements OnFragmentTimeAd
     private timeIsGoing timingFragment;
 
     boolean mBound;
-    NetworkSync timeService;
+    WhenhubSync timeService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +34,8 @@ public class TimerActivity extends AppCompatActivity implements OnFragmentTimeAd
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        if (NetworkSync.isSyncAvailable(getBaseContext())) {
-            startService(new Intent(this, NetworkSync.class));
+        if (WhenhubSync.isSyncAvailable(getBaseContext())) {
+            startService(new Intent(this, WhenhubSync.class));
         }
 
         Intent intent = getIntent();
@@ -62,7 +62,7 @@ public class TimerActivity extends AppCompatActivity implements OnFragmentTimeAd
         String title = data.getProjectTitleForTask(taskId);
         projectTitle.setText(title);
         TextView estimatedTimeText = (TextView) findViewById(R.id.chronometer_estimated_task_time);
-        estimatedTimeText.setText(Task.formatTimeInHoursAndMinutes(task.plannedTime));
+        estimatedTimeText.setText(DateTimeFormater.formatTimeInHoursAndMinutes(task.plannedTime));
         realTime = task.realTime;
         showRealTime();
         int[] lastTimerIntervals = data.getFiveLastTimeIntervals(taskId);
@@ -104,15 +104,15 @@ public class TimerActivity extends AppCompatActivity implements OnFragmentTimeAd
     private void saveDoneTask() {
         LocalData data = new LocalData(getApplicationContext(), true);
         data.makeTaskDone(taskId);
-        if (mBound && NetworkSync.isSyncAvailable(getBaseContext())) {
+        if (mBound && WhenhubSync.isSyncAvailable(getBaseContext())) {
             Task task = data.getTask(taskId);
             String title = data.getProjectTitleForTask(taskId);
             title = task.title + " (" + title + ")";
             Task taskDone = data.getTask(taskId);
             timeService.createEventForAccuracy(new WhenhubEvent(
                     title,
-                    LocalData.formatDate(),
-                    NetworkSync.getAccuracyRate(taskDone.realTime, taskDone.plannedTime))
+                    DateTimeFormater.formatDate(),
+                    WhenhubSync.getAccuracyRate(taskDone.realTime, taskDone.plannedTime))
             );
         }
         data.closeDataConnection();
@@ -122,7 +122,7 @@ public class TimerActivity extends AppCompatActivity implements OnFragmentTimeAd
 
     private void showRealTime() {
         TextView realTimeText = (TextView) findViewById(R.id.chronometer_total_task_time);
-        realTimeText.setText(Task.formatTimeInHoursAndMinutes(realTime));
+        realTimeText.setText(DateTimeFormater.formatTimeInHoursAndMinutes(realTime));
     }
 
     private void showFiveLastTimersIntervals(int[] lastTimerIntervals) {
@@ -134,7 +134,7 @@ public class TimerActivity extends AppCompatActivity implements OnFragmentTimeAd
         viewsForTimeIntervals[4] = (TextView) findViewById(R.id.lastTimers4);
         for (int i = 0; i < 5; i++) {
             if (i < lastTimerIntervals.length) {
-                viewsForTimeIntervals[i].setText(Task.formatTimeInHoursAndMinutes(lastTimerIntervals[i]));
+                viewsForTimeIntervals[i].setText(DateTimeFormater.formatTimeInHoursAndMinutes(lastTimerIntervals[i]));
                 viewsForTimeIntervals[i].setVisibility(View.VISIBLE);
             } else {
                 viewsForTimeIntervals[i].setVisibility(View.INVISIBLE);
@@ -226,12 +226,12 @@ public class TimerActivity extends AppCompatActivity implements OnFragmentTimeAd
         showFiveLastTimersIntervals(lastTimerIntervals);
         data.closeDataConnection();
 
-        if (NetworkSync.isSyncAvailable(getBaseContext())) {
+        if (WhenhubSync.isSyncAvailable(getBaseContext())) {
             TextView taskTitle = (TextView) findViewById(R.id.chronometer_task_title);
             TextView projectTitle = (TextView) findViewById(R.id.chronometer_project_title);
             String title = taskTitle.getText().toString() +
                     " (" + projectTitle.getText().toString() + ")";
-            timeService.createEventForTimeIntervals(new WhenhubEvent(title, LocalData.formatDate(), timeInMinutes));
+            timeService.createEventForTimeIntervals(new WhenhubEvent(title, DateTimeFormater.formatDate(), timeInMinutes));
         }
 
         setResult(Activity.RESULT_OK);
@@ -241,7 +241,7 @@ public class TimerActivity extends AppCompatActivity implements OnFragmentTimeAd
     @Override
     protected void onStart() {
         super.onStart();
-        Intent intent = new Intent(this, NetworkSync.class);
+        Intent intent = new Intent(this, WhenhubSync.class);
         bindService(intent, networkConnection, BIND_AUTO_CREATE);
     }
 
@@ -257,7 +257,7 @@ public class TimerActivity extends AppCompatActivity implements OnFragmentTimeAd
     private ServiceConnection networkConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            NetworkSync.LocalBinder myLocalBinder = (NetworkSync.LocalBinder) service;
+            WhenhubSync.LocalBinder myLocalBinder = (WhenhubSync.LocalBinder) service;
             timeService = myLocalBinder.getService();
             mBound = true;
         }

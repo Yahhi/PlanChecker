@@ -9,11 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageButton;
-import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.zip.Inflater;
 
 
 class ProjectTaskListAdapter extends BaseExpandableListAdapter {
@@ -72,11 +70,11 @@ class ProjectTaskListAdapter extends BaseExpandableListAdapter {
 
         TextView estimatedProjectTime = (TextView) convertView.findViewById(R.id.estimated_project_time);
         estimatedProjectTime.setText(
-                Task.formatTimeInHoursAndMinutes(projects.get(groupPosition).getPlannedTime()));
+                DateTimeFormater.formatTimeInHoursAndMinutes(projects.get(groupPosition).getPlannedTime()));
 
         TextView realProjectTime = (TextView) convertView.findViewById((R.id.real_project_time));
         realProjectTime.setText(
-                Task.formatTimeInHoursAndMinutes(projects.get(groupPosition).getRealTime()));
+                DateTimeFormater.formatTimeInHoursAndMinutes(projects.get(groupPosition).getRealTime()));
 
         return convertView;
     }
@@ -92,12 +90,12 @@ class ProjectTaskListAdapter extends BaseExpandableListAdapter {
 
         TextView estimatedTaskTime = (TextView) convertView.findViewById(R.id.estimated_task_time);
         estimatedTaskTime.setText(
-                Task.formatTimeInHoursAndMinutes(
+                DateTimeFormater.formatTimeInHoursAndMinutes(
                         projects.get(groupPosition).tasks.get(childPosition).plannedTime));
 
         TextView realTaskTime = (TextView) convertView.findViewById(R.id.real_task_time);
         realTaskTime.setText(
-                Task.formatTimeInHoursAndMinutes(
+                DateTimeFormater.formatTimeInHoursAndMinutes(
                         projects.get(groupPosition).tasks.get(childPosition).realTime));
 
         ImageButton pomodoroButton = (ImageButton) convertView.findViewById(R.id.pomodoro_button);
@@ -171,8 +169,8 @@ class ProjectTaskListAdapter extends BaseExpandableListAdapter {
                                         " (" + projects.get(groupPosition).tasks.get(childPosition).title + ")";
                                 int realTime = projects.get(groupPosition).tasks.get(childPosition).realTime;
                                 int estimatedTime = projects.get(groupPosition).tasks.get(childPosition).plannedTime;
-                                int customField = NetworkSync.getAccuracyRate(realTime, estimatedTime);
-                                ((MainActivity) context).createEventForAccuracy(new WhenhubEvent(title, LocalData.formatDate(), customField));
+                                int customField = WhenhubSync.getAccuracyRate(realTime, estimatedTime);
+                                ((MainActivity) context).createEventForAccuracy(new WhenhubEvent(title, DateTimeFormater.formatDate(), customField));
 
                                 projects.get(groupPosition).tasks.remove(childPosition);
                                 notifyDataSetChanged();

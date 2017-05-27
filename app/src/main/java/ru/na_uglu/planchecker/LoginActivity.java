@@ -374,6 +374,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         // Sign in success, update UI with the signed-in user's information
                         Log.i("AUTH", "signInWithEmail:success");
                         FirebaseUser user = mAuth.getCurrentUser();
+                        Toast.makeText(LoginActivity.this, "Authentication successful",
+                                Toast.LENGTH_SHORT).show();
                         setResult(RESULT_OK);
                     } else {
                         createUser(mEmail, mPassword);
@@ -381,7 +383,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }
             });
 
-            // TODO: register the new account here.
             return true;
         }
 
@@ -393,6 +394,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     if (task.isSuccessful()) {
                         Log.i("AUTH", "registerUser:success");
                         FirebaseUser user = mAuth.getCurrentUser();
+                        Toast.makeText(LoginActivity.this, "Authentication successful",
+                                Toast.LENGTH_SHORT).show();
                         setResult(RESULT_OK);
                     } else {
                         Log.i("AUTH", "createUserWithEmail:failure", task.getException());

@@ -12,24 +12,27 @@ class Project {
     String title;
     String comment;
     ArrayList<Task> tasks;
+    String lastModified;
 
     private int plannedTime;
     private int realTime;
-    private boolean done;
+    boolean done;
 
     public Project() {
         id = 0;
         title = "";
         comment = "";
+        lastModified = "";
         plannedTime = 0;
         realTime = 0;
         tasks = new ArrayList<>();
     }
 
-    Project(int id, String title, String comment, ArrayList<Task> tasks, boolean done) {
+    Project(int id, String title, String comment, ArrayList<Task> tasks, boolean done, String lastModified) {
         this.id = id;
         this.title = title;
         this.comment = comment;
+        this.lastModified = lastModified;
         this.tasks = tasks;
         plannedTime = countPlannedTime();
         realTime = countRealTime();

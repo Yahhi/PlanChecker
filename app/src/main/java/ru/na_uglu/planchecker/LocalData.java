@@ -4,18 +4,19 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
-import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.Entry;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-
-import static ru.na_uglu.planchecker.R.id.time;
 
 class LocalData {
     private SQLiteDatabase db;
@@ -30,12 +31,19 @@ class LocalData {
     }
 
     ArrayList<Project> getProjects() {
-        ArrayList<Project> projects = new ArrayList<>();
+        return getProjects(false);
+    }
 
-        Cursor cursor = db.rawQuery("SELECT * FROM projects WHERE done = 0", null);
+    ArrayList<Project> getProjects(boolean includingDone) {
+        ArrayList<Project> projects = new ArrayList<>();
+        String selectString = "SELECT * FROM projects";
+        if (!includingDone) {
+            selectString += " WHERE done = 0";
+        }
+        Cursor cursor = db.rawQuery(selectString, null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            projects.add(getProjectFromCursor(cursor, false));
+            projects.add(getProjectFromCursor(cursor, includingDone));
             cursor.moveToNext();
         }
         cursor.close();
@@ -47,6 +55,7 @@ class LocalData {
         String title = cursor.getString(cursor.getColumnIndex("title"));
         String comment = cursor.getString(cursor.getColumnIndex("comment"));
         Boolean done = cursor.getInt(cursor.getColumnIndex("done")) > 0;
+        String lastModified = cursor.getString(cursor.getColumnIndex("last_modified"));
 
         Cursor tasksCursor;
         if (!withDoneTasks) {
@@ -62,7 +71,7 @@ class LocalData {
         }
         tasksCursor.close();
 
-        return new Project(id, title, comment, tasks, done);
+        return new Project(id, title, comment, tasks, done, lastModified);
     }
 
     private Task getTaskFromCursor(Cursor cursor) {
@@ -73,19 +82,51 @@ class LocalData {
         String taskCreated = cursor.getString(cursor.getColumnIndex("when_created"));
         String taskDone = cursor.getString(cursor.getColumnIndex("when_done"));
         String comment = cursor.getString(cursor.getColumnIndex("comment"));
-        return new Task(taskId, taskTitle, comment, taskEstimatedTime, taskRealTime, taskCreated, taskDone);
+        String lastModified = cursor.getString(cursor.getColumnIndex("last_modified"));
+        return new Task(taskId, taskTitle, comment, taskEstimatedTime, taskRealTime, taskCreated, taskDone, lastModified);
     }
 
     void saveProject(int id, String title, String comment) {
         ContentValues values = new ContentValues();
         values.put("title", title);
         values.put("comment", comment);
-        values.put("last_modified", LocalData.formatDate());
+        values.put("last_modified", DateTimeFormater.formatDate());
         if (id == 0) {
             db.insert("projects", "", values);
         } else {
             db.update("projects", values, "id = ?", new String[]{Integer.toString(id)});
         }
+    }
+
+    void saveProject(int id, String title, String comment, boolean done, String lastModified) {
+        ContentValues values = new ContentValues();
+        values.put("title", title);
+        values.put("comment", comment);
+        int doneInt;
+        if (done) {
+            doneInt = 1;
+        } else {
+            doneInt = 0;
+        }
+        values.put("done", doneInt);
+        values.put("last_modified", lastModified);
+        if (isDBEntryExist("projects", id)) {
+            db.update("projects", values, "id = ?", new String[]{Integer.toString(id)});
+        } else {
+            values.put("id", id);
+            db.insert("projects", "", values);
+        }
+    }
+
+    private boolean isDBEntryExist(String tableName, int id) {
+        String sqlSelect = "SELECT * FROM " + tableName + " WHERE id = ?";
+        Cursor cursor = db.rawQuery(sqlSelect, new String[]{String.valueOf(id)});
+        Boolean exists = false;
+        if (cursor.getCount() > 0) {
+            exists = true;
+        }
+        cursor.close();
+        return exists;
     }
 
     Project getProject(int projectId) {
@@ -141,8 +182,8 @@ class LocalData {
     void makeTaskDone(int taskId) {
         ContentValues values = new ContentValues();
         values.put("done", 1);
-        values.put("when_done", formatDate());
-        values.put("last_modified", LocalData.formatDate());
+        values.put("when_done", DateTimeFormater.formatDate());
+        values.put("last_modified", DateTimeFormater.formatDate());
         db.update("tasks", values, "id = ?", new String[]{Integer.toString(taskId)});
     }
 
@@ -151,7 +192,7 @@ class LocalData {
             ContentValues timeValues = new ContentValues();
             timeValues.put("task_id", taskId);
             timeValues.put("time", time);
-            timeValues.put("when_added", formatDate());
+            timeValues.put("when_added", DateTimeFormater.formatDate());
             db.insert("time_intervals", "", timeValues);
 
             Cursor currentTimeCursor = db.rawQuery("SELECT real_time FROM tasks WHERE id = ?",
@@ -161,31 +202,9 @@ class LocalData {
             currentTimeCursor.close();
             ContentValues updatedTimeValues = new ContentValues();
             updatedTimeValues.put("real_time", curentTaskTime + time);
-            updatedTimeValues.put("last_modified", LocalData.formatDate());
+            updatedTimeValues.put("last_modified", DateTimeFormater.formatDate());
             db.update("tasks", updatedTimeValues, "id = ?", new String[]{Integer.toString(taskId)});
         }
-    }
-
-    private String getNowFormatted() {
-        String currentDateTime = DateFormat.getDateTimeInstance().format(new Date());
-        return currentDateTime;
-    }
-
-    static String formatDate() {
-        return formatDate(0);
-    }
-
-    static String formatDate(long dateLong) {
-        Date date;
-        if (dateLong == 0) {
-            date = new Date();
-        } else {
-            date = new Date(dateLong);
-        }
-        SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat format2 = new SimpleDateFormat("hh:mm:ss");
-        String formatResult = format1.format(date) + "T" + format2.format(date) + "Z";
-        return formatResult;
     }
 
     int[] getFiveLastTimeIntervals(int taskId) {
@@ -255,12 +274,37 @@ class LocalData {
         values.put("title", title);
         values.put("estimated_time", estimatedTime);
         values.put("comment", comment);
-        values.put("last_modified", LocalData.formatDate());
+        values.put("last_modified", DateTimeFormater.formatDate());
         if (taskId == 0) {
-            values.put("when_created", formatDate());
+            values.put("when_created", DateTimeFormater.formatDate());
             db.insert("tasks", "", values);
         } else {
             db.update("tasks", values, "id = ?", new String[]{Integer.toString(taskId)});
+        }
+    }
+
+    private void saveTask(Task task, int projectId) {
+        ContentValues values = new ContentValues();
+        values.put("title", task.title);
+        values.put("project_id", projectId);
+        values.put("estimated_time", task.plannedTime);
+        values.put("real_time", task.realTime);
+        values.put("comment", task.comment);
+        values.put("when_created", DateTimeFormater.formatDate(task.whenCreated));
+        int intDone;
+        if (task.whenCompleted.equals(new Date(0))) {
+            intDone = 0;
+        } else {
+            intDone = 1;
+        }
+        values.put("done", intDone);
+        values.put("when_done", DateTimeFormater.formatDate(task.whenCompleted));
+        values.put("last_modified", task.lastModified);
+        if (isDBEntryExist("tasks", task.id)) {
+            db.update("tasks", values, "id = ?", new String[]{Integer.toString(task.id)});
+        } else {
+            values.put("id", task.id);
+            db.insert("tasks", "", values);
         }
     }
 
@@ -339,7 +383,7 @@ class LocalData {
     void makeProjectDone(int projectId) {
         ContentValues values = new ContentValues();
         values.put("done", 1);
-        values.put("last_modified", LocalData.formatDate());
+        values.put("last_modified", DateTimeFormater.formatDate());
         db.update("projects", values, "id = ?", new String[]{Integer.toString(projectId)});
     }
 
@@ -358,7 +402,7 @@ class LocalData {
                     " (" + getProjectTitleForTask(id) + ")";
             Integer realTime = cursor.getInt(cursor.getColumnIndex("real_time"));
             Integer estimatedTime = cursor.getInt(cursor.getColumnIndex("estimated_time"));
-            Integer customField = NetworkSync.getAccuracyRate(realTime, estimatedTime);
+            Integer customField = WhenhubSync.getAccuracyRate(realTime, estimatedTime);
             String whenDone = cursor.getString(cursor.getColumnIndex("when_done"));
             accuracyResults[i++] = new WhenhubEvent(title, whenDone, customField);
             cursor.moveToNext();
@@ -398,7 +442,11 @@ class LocalData {
                 averageTime += aTimeInDay;
             }
             cursor.close();
-            return averageTime / timeInDay.length;
+            if (timeInDay.length > 0) {
+                return averageTime / timeInDay.length;
+            } else {
+                return 0;
+            }
         }
         cursor.close();
         return 0;
@@ -428,7 +476,7 @@ class LocalData {
     }
 
     void deleteTimeInterval(long id) {
-        db.delete("time_intervals", "when_added = ?", new String[]{LocalData.formatDate(id)});
+        db.delete("time_intervals", "when_added = ?", new String[]{DateTimeFormater.formatDate(id)});
     }
 
     ArrayList<TimeInterval> getTimeIntervals() {
@@ -449,5 +497,103 @@ class LocalData {
             cursor.moveToNext();
         }
         return timeIntervals;
+    }
+
+    void uploadAllData() {
+        Log.i("FIREBASE-sync", "upload started");
+        ArrayList<Project> allProjects = getProjects(true);
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference userReference = database.getReference(userId);
+
+        for (Project projectToUpload: allProjects) {
+            userReference.child("projects").child(String.valueOf(projectToUpload.id)).setValue(projectToUpload);
+        }
+        ArrayList<TimeInterval> allTimeIntervals = getTimeIntervals();
+        for (TimeInterval timeToUpload: allTimeIntervals) {
+            userReference.child("time_intervals").child(String.valueOf(timeToUpload.id)).setValue(timeToUpload);
+        }
+    }
+
+    void downloadAllData() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference userReference = database.getReference(userId);
+        userReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                DataSnapshot projectsBase = dataSnapshot.child("projects");
+                for (DataSnapshot oneProject : projectsBase.getChildren()) {
+                    Project projectToStore = oneProject.getValue(Project.class);
+                    saveFullRemoteProject(projectToStore);
+                }
+                DataSnapshot timeIntervalsBase = dataSnapshot.child("time_intervals");
+                for (DataSnapshot oneInterval : timeIntervalsBase.getChildren()) {
+                    TimeInterval timeIntervalToStore = oneInterval.getValue(TimeInterval.class);
+                    saveRemoteTimeInterval(timeIntervalToStore);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    void saveFullRemoteProject(Project projectToStore) {
+        String projectLastModifiedLocal = getLastModified("projects", projectToStore.id);
+        if (!isLocalDateOlder(projectLastModifiedLocal, projectToStore.lastModified)) {
+            saveProject(projectToStore.id, projectToStore.title, projectToStore.comment, projectToStore.done, projectToStore.lastModified);
+        }
+        for (Task oneTask: projectToStore.tasks) {
+            if (!isLocalDateOlder(getLastModified("tasks", oneTask.id), oneTask.lastModified)) {
+                saveTask(oneTask, projectToStore.id);
+            }
+        }
+    }
+
+    private boolean isLocalDateOlder(String local, String remote) {
+        if (local.compareTo(remote) >= 0) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    private String getLastModified(String tableName, int id) {
+        String lastModified = "0000-00-00";
+        String sqlSelect = "SELECT last_modified FROM " + tableName + " WHERE id = ?";
+        Cursor cursor = db.rawQuery(sqlSelect,
+                new String[]{String.valueOf(id)});
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            lastModified = cursor.getString(cursor.getColumnIndex("last_modified"));
+        }
+        cursor.close();
+        return lastModified;
+    }
+
+    void saveRemoteTimeInterval(TimeInterval timeIntervalToStore) {
+        if (!timeIntervalExists(timeIntervalToStore.whenHappened)) {
+            ContentValues timeValues = new ContentValues();
+            timeValues.put("task_id", timeIntervalToStore.taskId);
+            timeValues.put("time", timeIntervalToStore.time);
+            timeValues.put("when_added", DateTimeFormater.formatDate(timeIntervalToStore.whenHappened));
+            db.insert("time_intervals", "", timeValues);
+        }
+    }
+
+    private boolean timeIntervalExists(Date whenHappened) {
+        Cursor cursor = db.rawQuery("SELECT * FROM time_intervals WHERE when_added = ?",
+                new String[]{DateTimeFormater.formatDate(whenHappened)});
+        Boolean exists = false;
+        if (cursor.getCount() > 0) {
+            exists = true;
+        }
+        cursor.close();
+        return exists;
     }
 }

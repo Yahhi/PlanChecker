@@ -42,9 +42,9 @@ class TasksAdapter extends BaseAdapter {
         TextView taskTitle = (TextView) convertView.findViewById(R.id.task_title_in_done);
         taskTitle.setText(tasks.get(position).title);
         TextView taskPlannedTime = (TextView) convertView.findViewById(R.id.task_time_plan_in_done);
-        taskPlannedTime.setText(Task.formatTimeInHoursAndMinutes(tasks.get(position).plannedTime));
+        taskPlannedTime.setText(DateTimeFormater.formatTimeInHoursAndMinutes(tasks.get(position).plannedTime));
         TextView taskRealTime = (TextView) convertView.findViewById(R.id.task_time_real_in_done);
-        taskRealTime.setText(Task.formatTimeInHoursAndMinutes(tasks.get(position).realTime));
+        taskRealTime.setText(DateTimeFormater.formatTimeInHoursAndMinutes(tasks.get(position).realTime));
         return convertView;
     }
 }

@@ -88,7 +88,7 @@
         </activity>
 
         <service
-            android:name=".NetworkSync"
+            android:name=".WhenhubSync"
             android:enabled="true"
             android:exported="true" />
 
@@ -127,6 +127,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ru.na_uglu.planchecker.MainActivity" />
         </activity>
+
     </application>
 
 </manifest>

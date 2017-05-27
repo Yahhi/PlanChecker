@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     boolean neededAccessToken;
 
     boolean mBound;
-    NetworkSync timeService;
+    WhenhubSync timeService;
 
     private FirebaseAuth mAuth;
 
@@ -47,8 +47,8 @@ public class MainActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        if (NetworkSync.isSyncAvailable(getBaseContext())) {
-            startService(new Intent(this, NetworkSync.class));
+        if (WhenhubSync.isSyncAvailable(getBaseContext())) {
+            startService(new Intent(this, WhenhubSync.class));
         }
 
         FloatingActionButton fab_project = (FloatingActionButton) findViewById(R.id.fab_add_project);
@@ -210,6 +210,13 @@ public class MainActivity extends AppCompatActivity {
         } else if (id == R.id.authentication) {
             Intent signInIntent = new Intent(this, LoginActivity.class);
             startActivityForResult(signInIntent, REQUEST_LOGIN);
+        } else if (id == R.id.action_upload) {
+            LocalData data = new LocalData(this, false);
+            data.uploadAllData();
+        } else if (id == R.id.action_download) {
+            LocalData data = new LocalData(this, true);
+            data.downloadAllData();
+            fillTaskList();
         }
 
         return super.onOptionsItemSelected(item);
@@ -228,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
-        if (NetworkSync.isSyncAvailable(getBaseContext())) {
+        if (WhenhubSync.isSyncAvailable(getBaseContext())) {
             String link;
             if (whichPageToOpen.equals("working resume")) {
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
@@ -241,7 +248,6 @@ public class MainActivity extends AppCompatActivity {
                 String viewCode = preferences.getString("accuracyViewCode", "");
                 link = "https://studio.whenhub.com/schedules/" + scheduleId + "/planning-accuracy/?viewCode=" + viewCode;
             }
-            //Log.i("VOLLEY", link);
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
             startActivity(browserIntent);
         } else {
@@ -256,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void createEventForAccuracy(WhenhubEvent event) {
-        if (NetworkSync.isSyncAvailable(getBaseContext())) {
+        if (WhenhubSync.isSyncAvailable(getBaseContext())) {
             timeService.createEventForAccuracy(event);
         }
     }
@@ -277,20 +283,14 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 Toast toast = Toast.makeText(this, "Login successful", Toast.LENGTH_LONG);
                 toast.show();
-                askForFullSync();
-
             }
         }
-    }
-
-    private void askForFullSync() {
-        //TODO start syncing
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        Intent intent = new Intent(this, NetworkSync.class);
+        Intent intent = new Intent(this, WhenhubSync.class);
         bindService(intent, networkConnection, BIND_AUTO_CREATE);
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -325,7 +325,7 @@ public class MainActivity extends AppCompatActivity {
     private ServiceConnection networkConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            NetworkSync.LocalBinder myLocalBinder = (NetworkSync.LocalBinder) service;
+            WhenhubSync.LocalBinder myLocalBinder = (WhenhubSync.LocalBinder) service;
             timeService = myLocalBinder.getService();
             mBound = true;
         }

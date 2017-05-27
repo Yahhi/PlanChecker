@@ -47,26 +47,26 @@ class DBHelper extends SQLiteOpenHelper {
 
     private void insertProjectData(SQLiteDatabase db) {
         db.execSQL("INSERT INTO `projects` VALUES (1,'"+context.getResources().getString(R.string.project_foreign_language)+"','"+
-                context.getResources().getString(R.string.project_foreign_language_comment)+"', 0, '"+LocalData.formatDate()+"');");
-        db.execSQL("INSERT INTO `projects` VALUES (2,'"+context.getResources().getString(R.string.project_blogging)+"','', 0, '"+LocalData.formatDate()+");");
-        db.execSQL("INSERT INTO `projects` VALUES (3,'"+context.getResources().getString(R.string.project_app)+"','', 0, '"+LocalData.formatDate()+");");
+                context.getResources().getString(R.string.project_foreign_language_comment)+"', 0, '"+DateTimeFormater.formatDate()+"');");
+        db.execSQL("INSERT INTO `projects` VALUES (2,'"+context.getResources().getString(R.string.project_blogging)+"','', 0, '"+DateTimeFormater.formatDate()+"');");
+        db.execSQL("INSERT INTO `projects` VALUES (3,'"+context.getResources().getString(R.string.project_app)+"','', 0, '"+DateTimeFormater.formatDate()+"');");
     }
 
     private void insertTasksData(SQLiteDatabase db) {
-        db.execSQL("INSERT INTO `tasks` VALUES (1,'"+context.getResources().getString(R.string.task_read_story)+"',1,300,0,'', '2017-01-05T12:00:00Z',0, '', '"+LocalData.formatDate()+");");
-        db.execSQL("INSERT INTO `tasks` VALUES (2,'"+context.getResources().getString(R.string.task_grammar)+"',1,60,0,'','2017-01-05T12:10:32Z',0, '', '"+LocalData.formatDate()+");");
-        db.execSQL("INSERT INTO `tasks` VALUES (3,'"+context.getResources().getString(R.string.task_new_words)+"',1,120,0,'','2017-01-05T12:12:04Z',0, '', '"+LocalData.formatDate()+");");
+        db.execSQL("INSERT INTO `tasks` VALUES (1,'"+context.getResources().getString(R.string.task_read_story)+"',1,300,0,'', '2017-01-05T12:00:00Z',0, '', '"+DateTimeFormater.formatDate()+"');");
+        db.execSQL("INSERT INTO `tasks` VALUES (2,'"+context.getResources().getString(R.string.task_grammar)+"',1,60,0,'','2017-01-05T12:10:32Z',0, '', '"+DateTimeFormater.formatDate()+"');");
+        db.execSQL("INSERT INTO `tasks` VALUES (3,'"+context.getResources().getString(R.string.task_new_words)+"',1,120,0,'','2017-01-05T12:12:04Z',0, '', '"+DateTimeFormater.formatDate()+"');");
 
         db.execSQL("INSERT INTO `tasks` VALUES (4,'"+context.getResources().getString(R.string.task_choose_theme)+"',2,30,0,'"+
-                context.getResources().getString(R.string.task_choose_theme_comment)+"','2017-01-05T12:17:08Z',0, '', '"+LocalData.formatDate()+");");
-        db.execSQL("INSERT INTO `tasks` VALUES (5,'"+context.getResources().getString(R.string.task_find_5_articles)+"',2,120,0,'','2017-01-05T12:18:14Z',0, '', '"+LocalData.formatDate()+");");
-        db.execSQL("INSERT INTO `tasks` VALUES (6,'"+context.getResources().getString(R.string.task_make_plan)+"',2,60,0,'','2017-01-05T12:19:44Z',0, '', '"+LocalData.formatDate()+");");
+                context.getResources().getString(R.string.task_choose_theme_comment)+"','2017-01-05T12:17:08Z',0, '', '"+DateTimeFormater.formatDate()+"');");
+        db.execSQL("INSERT INTO `tasks` VALUES (5,'"+context.getResources().getString(R.string.task_find_5_articles)+"',2,120,0,'','2017-01-05T12:18:14Z',0, '', '"+DateTimeFormater.formatDate()+"');");
+        db.execSQL("INSERT INTO `tasks` VALUES (6,'"+context.getResources().getString(R.string.task_make_plan)+"',2,60,0,'','2017-01-05T12:19:44Z',0, '', '"+DateTimeFormater.formatDate()+"');");
 
-        db.execSQL("INSERT INTO `tasks` VALUES (7,'"+context.getResources().getString(R.string.task_wireframes)+"',3,90,0,'','2017-01-05T12:30:54Z',0, '', '"+LocalData.formatDate()+");");
-        db.execSQL("INSERT INTO `tasks` VALUES (8,'"+context.getResources().getString(R.string.task_database)+"',3,120,0,'','2017-01-05T12:31:59Z',0, '', '"+LocalData.formatDate()+");");
-        db.execSQL("INSERT INTO `tasks` VALUES (9,'"+context.getResources().getString(R.string.task_dbhelper)+"',3,60,0,'','2017-01-05T12:32:44Z',0, '', '"+LocalData.formatDate()+");");
-        db.execSQL("INSERT INTO `tasks` VALUES (10,'"+context.getResources().getString(R.string.task_write_code)+"',3,120,0,'','2017-01-05T12:33:23Z',0, '', '"+LocalData.formatDate()+");");
-        db.execSQL("INSERT INTO `tasks` VALUES (11,'"+context.getResources().getString(R.string.task_activity)+"',3,330,0,'','2017-01-05T12:34:07Z',0, '', '"+LocalData.formatDate()+");");
+        db.execSQL("INSERT INTO `tasks` VALUES (7,'"+context.getResources().getString(R.string.task_wireframes)+"',3,90,0,'','2017-01-05T12:30:54Z',0, '', '"+DateTimeFormater.formatDate()+"');");
+        db.execSQL("INSERT INTO `tasks` VALUES (8,'"+context.getResources().getString(R.string.task_database)+"',3,120,0,'','2017-01-05T12:31:59Z',0, '', '"+DateTimeFormater.formatDate()+"');");
+        db.execSQL("INSERT INTO `tasks` VALUES (9,'"+context.getResources().getString(R.string.task_dbhelper)+"',3,60,0,'','2017-01-05T12:32:44Z',0, '', '"+DateTimeFormater.formatDate()+"');");
+        db.execSQL("INSERT INTO `tasks` VALUES (10,'"+context.getResources().getString(R.string.task_write_code)+"',3,120,0,'','2017-01-05T12:33:23Z',0, '', '"+DateTimeFormater.formatDate()+"');");
+        db.execSQL("INSERT INTO `tasks` VALUES (11,'"+context.getResources().getString(R.string.task_activity)+"',3,330,0,'','2017-01-05T12:34:07Z',0, '', '"+DateTimeFormater.formatDate()+"');");
     }
 
     @Override
@@ -74,12 +74,12 @@ class DBHelper extends SQLiteOpenHelper {
         if (oldVersion >= 8) {
             db.execSQL("ALTER TABLE projects ADD COLUMN `last_modified` TEXT");
             ContentValues projectUpdateValues = new ContentValues();
-            projectUpdateValues.put("last_modified", LocalData.formatDate());
+            projectUpdateValues.put("last_modified", DateTimeFormater.formatDate());
             db.update("projects", projectUpdateValues, null, null);
 
             db.execSQL("ALTER TABLE tasks ADD COLUMN `last_modified` TEXT");
             ContentValues taskUpdateValues = new ContentValues();
-            taskUpdateValues.put("last_modified", LocalData.formatDate());
+            taskUpdateValues.put("last_modified", DateTimeFormater.formatDate());
             db.update("tasks", taskUpdateValues, null, null);
 
             db.execSQL("CREATE TABLE `time_intervals_backup` (" +

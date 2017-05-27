@@ -11,6 +11,9 @@ class TimeInterval {
     int time;
     int taskId = 0;
 
+    TimeInterval() {
+    }
+
     TimeInterval(Date whenHappened, int time) {
         this.id = whenHappened.getTime();
         this.whenHappened = whenHappened;

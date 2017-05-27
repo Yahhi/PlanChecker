@@ -11,6 +11,7 @@ class Task {
     String comment;
     int plannedTime;
     int realTime;
+    String lastModified;
 
     Date whenCreated;
     Date whenCompleted;
@@ -21,32 +22,16 @@ class Task {
         comment = "";
         plannedTime = 0;
         realTime = 0;
+        lastModified = "";
     }
 
-    static String formatTimeInHoursAndMinutes(int time) {
-        int hours = (int) Math.ceil(time / 60);
-        String hoursString;
-        if (hours < 10) {
-            hoursString = "0" + hours;
-        } else {
-            hoursString = Integer.toString(hours);
-        }
-        int minutes = time % 60;
-        String minutesString;
-        if (minutes < 10) {
-            minutesString = "0" + minutes;
-        } else {
-            minutesString = Integer.toString(minutes);
-        }
-        return hoursString + ":" + minutesString;
-    }
-
-    Task(int id, String title, String comment, int estimatedTime, int realTime, String createdDate, String completedDate) {
+    Task(int id, String title, String comment, int estimatedTime, int realTime, String createdDate, String completedDate, String lastModified) {
         this.id = id;
         this.title = title;
         this.comment = comment;
         plannedTime = estimatedTime;
         this.realTime = realTime;
+        this.lastModified = lastModified;
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         try {
             whenCreated = format.parse(createdDate);
@@ -60,11 +45,4 @@ class Task {
         }
     }
 
-    public String getPlannedTime() {
-        return Integer.toString(plannedTime);
-    }
-
-    public String getRealTime() {
-        return Integer.toString(realTime);
-    }
 }

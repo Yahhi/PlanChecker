@@ -61,7 +61,7 @@ public class AddTask extends AppCompatActivity {
         if (taskId != 0) {
             Task task = data.getTask(taskId);
             taskTitle.setText(task.title);
-            taskTime.setText(Task.formatTimeInHoursAndMinutes(task.plannedTime));
+            taskTime.setText(DateTimeFormater.formatTimeInHoursAndMinutes(task.plannedTime));
             comment.setText(task.comment);
             projectSelection.setSelection(Arrays.asList(projectTitles).indexOf(data.getProjectTitleForTask(taskId)));
         }

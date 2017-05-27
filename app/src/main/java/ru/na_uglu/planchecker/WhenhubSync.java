@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.os.Binder;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -20,14 +19,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
 import java.util.TimeZone;
 
-public class NetworkSync extends Service {
+public class WhenhubSync extends Service {
 
     IBinder mBinder = new LocalBinder();
 
-    public NetworkSync() {
+    public WhenhubSync() {
 
     }
 
@@ -346,9 +344,9 @@ public class NetworkSync extends Service {
     }
 
     class LocalBinder extends Binder {
-        NetworkSync getService() {
+        WhenhubSync getService() {
             // Return this instance of LocalService so clients can call public methods
-            return NetworkSync.this;
+            return WhenhubSync.this;
         }
     }
 }

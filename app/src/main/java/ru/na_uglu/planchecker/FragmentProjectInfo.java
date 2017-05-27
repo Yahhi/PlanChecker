@@ -65,9 +65,9 @@ public class FragmentProjectInfo extends Fragment {
         Project myProject = data.getProject(projectId, true);
         projectStarted.setText(myProject.getDateStarted(getContext()));
         projectCompleted.setText(myProject.getDateCompleted(getContext()));
-        projectRealTime.setText(Task.formatTimeInHoursAndMinutes(myProject.getRealTime()));
-        projectEstimatedTime.setText(Task.formatTimeInHoursAndMinutes(myProject.getPlannedTime()));
-        projectAverageTime.setText(Task.formatTimeInHoursAndMinutes(data.getAverageTime(projectId)));
+        projectRealTime.setText(DateTimeFormater.formatTimeInHoursAndMinutes(myProject.getRealTime()));
+        projectEstimatedTime.setText(DateTimeFormater.formatTimeInHoursAndMinutes(myProject.getPlannedTime()));
+        projectAverageTime.setText(DateTimeFormater.formatTimeInHoursAndMinutes(data.getAverageTime(projectId)));
         projectComment.setText(myProject.comment);
         data.closeDataConnection();
     }

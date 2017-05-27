@@ -110,7 +110,7 @@ class DateTimeListAdapter extends BaseExpandableListAdapter {
         for (TimeInterval timeInterval:timeIntervals) {
             timeInt += timeInterval.time;
         }
-        return Task.formatTimeInHoursAndMinutes(timeInt);
+        return DateTimeFormater.formatTimeInHoursAndMinutes(timeInt);
     }
 
     @Override

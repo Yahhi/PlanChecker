@@ -38,4 +38,10 @@
         android:orderInCategory="104"
         android:title="@string/action_settings"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_upload"
+        android:title="UPLOAD"/>
+    <item
+        android:id="@+id/action_download"
+        android:title="DOWNLOAD"/>
 </menu>
